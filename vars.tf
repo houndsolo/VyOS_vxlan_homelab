@@ -20,6 +20,19 @@ locals {
   bgp_l2vpn_vni_advertise_svi = false
 }
 
+variable "fabric" {
+  type = object({
+    spines = map(object({
+      id  = number
+    }))
+
+    leaves = map(object({
+      id  = number
+      hypervisor_node = string
+    }))
+  })
+}
+
 variable "dns" {
   description = "DNS configuration"
   type = object({
@@ -27,41 +40,5 @@ variable "dns" {
     domain_name = string
     domain_search = list(string)
   })
-  default = {
-    name_servers = ["10.8.6.9"]
-    domain_name = "lylat.space"
-    domain_search = ["lylat.space"]
-  }
-}
-
-variable "anycast_rp_address" {
-  type = string
-  default = "10.240.253.255"
-}
-
-variable "rp_group_ip_only" {
-  type = string
-  default = "225.0.0.69"
-}
-variable "rp_groups" {
-  type = list(string)
-  default = ["225.0.0.69/32"]
-}
-
-
-variable "spines" {
-  type = map(object({
-    hostname  = string
-    node_id   = number
-  }))
-}
-
-variable "leaves" {
-  description = "List of network nodes with their details."
-  type = map(object({
-    hostname  = string
-    host_node = string
-    node_id   = number
-  }))
 }
 
