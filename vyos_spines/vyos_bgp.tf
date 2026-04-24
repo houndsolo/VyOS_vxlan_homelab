@@ -34,23 +34,15 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_leaf_underlay" {
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw1" {
   for_each      = var.leaves
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_underlay]
-  identifier = { neighbor = "eth1.${1000+100*var.node.id+each.value.id}" }
-  interface = {
-    v6only = {
-      peer_group = "leaf_underlay"
-    }
-  }
+  identifier = { neighbor = "10.241.${100*var.node.id+each.value.id}.1" }
+  peer_group = "leaf_underlay"
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw2" {
   for_each      = var.leaves
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_underlay]
-  identifier = { neighbor = "eth2.${2000+100*var.node.id+each.value.id}" }
-  interface = {
-    v6only = {
-      peer_group = "leaf_underlay"
-    }
-  }
+  identifier = { neighbor = "10.242.${100*var.node.id+each.value.id}.1" }
+  peer_group = "leaf_underlay"
 }
 
 #

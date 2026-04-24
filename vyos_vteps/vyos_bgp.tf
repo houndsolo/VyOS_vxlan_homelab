@@ -65,23 +65,15 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_spine_local_as" {
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw1" {
   for_each      = var.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = "eth1.${1000+100*each.value.id+var.node.id}" }
-  interface = {
-    v6only = {
-      peer_group = "spine_underlay"
-    }
-  }
+  identifier = { neighbor = "10.241.${100*each.value.id+var.node.id}.0" }
+  peer_group = "spine_underlay"
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw2" {
   for_each      = var.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = "eth2.${2000+100*each.value.id+var.node.id}" }
-  interface = {
-    v6only = {
-      peer_group = "spine_underlay"
-    }
-  }
+  identifier = { neighbor = "10.242.${100*each.value.id+var.node.id}.0" }
+  peer_group = "spine_underlay"
 }
 
 #
