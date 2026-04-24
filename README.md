@@ -1,33 +1,37 @@
 # OpenTofu VXLAN Homelab
 
-A network automation project using OpenTofu 1.9 to deploy  VXLAN VMs on hypervisors for other virtual machines to connect to.
+A network automation project using OpenTofu 1.9+ to deploy  VXLAN VMs on hypervisors for other virtual machines to connect to.
 
 
 ## 🏗️ Architecture
 Physical topology
-Hypervisors connected to each Spine (vmbr4001,vmbr4002), and to 1 Leaf(vmbr100)
-VyOS Vtep is connected to each Spine
+2 switches for connectivity [1 & 2]
+7 Hypervisors connected to both switches [nodes 10,11,12,13,14,17,21]
+2 Spines connected to both switches [1 & 2]
 
-VMs are connected to either the VyOS Vtep(vmbr4000), or to the Physical 9300 Leaf(vmbr100)
+Each Hypervisor then has 1 connection per Switch per Spine - 4 connections per hypervisor.
+ex node 10)
+sw1s1v10 - 1110
+sw1s2v10 - 1210
+sw2s1v10 - 2110
+sw2s2v10 - 2210
 
 ### Hardware Components
 - **Spine Layer**
-  - 2 x Cisco Catalyst 9300 switches
-  - Running IOS-XE 17.16.01
+  - 2 x VyOS routers (on bare-metal)
+  - Running VyOS 1.5-rolling-202402060022
 
 - **Leaf Layer**
-  - 2 x Cisco Catalyst 9300 switches
   - 7 x Virtual VyOS routers (on Proxmox)
   - Running VyOS 1.5-rolling-202402060022
 
 
 ### Addressing Scheme
 - **Underlay Network**
-  - OSPF Point-to-point links: `10.240.[leaf][spine].0/31`
+  - ipv6 link-local, with ipv4 dum240 loopback advertised over ipv6 next hop
 
 - **Overlay Network**
-  - iBGP Loopback interfaces: `10.240.[254-255].[id]`
-  - MSDP peering: `10.240.253.[id]`
+  - iBGP Loopback interfaces: `10.255.240.[id]`
 
 ## 📁 Project Structure
 
