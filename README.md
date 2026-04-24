@@ -63,3 +63,7 @@ sw2s2v10 - 2210
 - VyOS 1.5-rolling-202402060022
 - Proxmox VE for virtual routers
 
+| Tenant / Segment | VLAN |   VNI | Subnet          | Gateway      | Description        |
+| ---------------- | ---: | ----: | --------------- | ------------ | ------------------ |
+| Servers          |   6  | 9006  | `10.6.0.0/16`   | `10.6.0.5`   | Server network     |
+
