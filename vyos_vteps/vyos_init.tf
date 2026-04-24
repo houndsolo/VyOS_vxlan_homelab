@@ -26,6 +26,7 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch1" {
 
   identifier = { ethernet = "eth1" }
   description = "p2p-sw1"
+  mtu = "9169"
 
     lifecycle {
       ignore_changes = [
@@ -44,7 +45,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch1" {
   }
   ipv6 = {}
   description = "p2p-spine-${each.value.id} - vlan${1000 + 100 * each.value.id + var.node.id}-sw1"
-  #mtu = "9169"
+  mtu = "9169"
 
 }
 
@@ -54,6 +55,7 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch2" {
 
   identifier = { ethernet = "eth2" }
   description = "p2p-sw2"
+  mtu = "9169"
 
     lifecycle {
       ignore_changes = [
@@ -72,7 +74,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
   }
   ipv6 = {}
   description = "p2p-spine-${each.value.id} - vlan${2000 + 100 * each.value.id + var.node.id}-sw2"
-  #mtu = "9169"
+  mtu = "9169"
 
 }
 

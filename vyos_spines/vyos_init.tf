@@ -21,7 +21,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
   }
   ipv6 = {}
   description = "p2p-leaf-${each.value.id} - vlan${1000 + 100 * var.node.id + each.value.id}-sw1"
-  #mtu = "9169"
+  mtu = "9169"
 
 }
 
@@ -34,7 +34,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
   }
   ipv6 = {}
   description = "p2p-leaf-${each.value.id} - vlan${2000 + 100 * var.node.id + each.value.id}-sw2"
-  #mtu = "9169"
+  mtu = "9169"
 
 }
 
