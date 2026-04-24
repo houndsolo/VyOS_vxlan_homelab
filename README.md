@@ -29,9 +29,12 @@ sw2s2v10 - 2210
 ### Addressing Scheme
 - **Underlay Network**
   - ipv6 link-local, with ipv4 dum240 loopback advertised over ipv6 next hop
+  - using local-as to force eBGP behavior, AS 700 + id
 
 - **Overlay Network**
   - iBGP Loopback interfaces: `10.255.240.[id]`
+  - AS 700
+ 
 
 ## 📁 Project Structure
 
