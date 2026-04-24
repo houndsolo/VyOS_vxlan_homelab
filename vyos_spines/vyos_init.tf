@@ -19,7 +19,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
     ethernet = "eth1"
     vif = 1000 + 100 * var.node.id + each.value.id
   }
-  address = ["10.241.${100*var.node.id+each.value.id}.0/31"]
+  ipv6 = {}
   description = "p2p-leaf-${each.value.id} - vlan${1000 + 100 * var.node.id + each.value.id}-sw1"
   #mtu = "9169"
 
@@ -32,20 +32,18 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
     ethernet = "eth2"
     vif = 2000 + 100 * var.node.id + each.value.id
   }
-  address = ["10.242.${100*var.node.id+each.value.id}.0/31"]
+  ipv6 = {}
   description = "p2p-leaf-${each.value.id} - vlan${2000 + 100 * var.node.id + each.value.id}-sw2"
   #mtu = "9169"
 
 }
 
-#resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth1" {
-#  for_each = var.leaves
-#  identifier = { interface = "eth1.${1000+100*var.node.id+each.value.id}" }
-#}
-#
-#resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth2" {
-#  for_each = var.leaves
-#  identifier = { interface = "eth2.${2000+100*var.node.id+each.value.id}" }
-#}
+resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth1" {
+  for_each = var.leaves
+  identifier = { interface = "eth1.${1000+100*var.node.id+each.value.id}" }
+}
 
-
+resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth2" {
+  for_each = var.leaves
+  identifier = { interface = "eth2.${2000+100*var.node.id+each.value.id}" }
+}

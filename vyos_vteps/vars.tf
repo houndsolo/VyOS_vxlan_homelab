@@ -1,10 +1,18 @@
 locals {
-  #hostname = "vyos-${var.node.hypervisor_node}-vtep"
   hostname = "LEAF-${var.node.id}"
+
   vxlan_loopback = "10.255.240.${var.node.id}/32"
   bgp_system_as = 700 + var.node.id
   vxlan_local_as = 700
   vxlan_source_interface = "dum240"
+
+  vxlan_peers = {
+    for leaf_name, leaf in var.leaves:
+    leaf_name => merge(leaf, {
+      vxlan_loopback = "10.255.240.${leaf.id}"
+    })
+    if leaf.id != var.node.id
+  }
 }
 
 variable "dns" {
