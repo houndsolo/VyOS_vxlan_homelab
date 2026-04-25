@@ -6,6 +6,13 @@ resource "vyos_protocols_bgp" "enable_bgp" {
   ]
   system_as = local.bgp_system_as
 }
+resource "vyos_protocols_bgp_parameters" "set_router_id" {
+  router_id = local.vxlan_loopback
+  fast_convergence = true
+}
+resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" {
+  multipath_relax = true
+}
 #
 #resource "vyos_protocols_bgp_address_family_ipv4_unicast_maximum_paths" "bgp_multipath" {
 #  depends_on = [vyos_protocols_bgp.enable_bgp]
@@ -16,7 +23,7 @@ resource "vyos_protocols_bgp_address_family_l2vpn_evpn" "l2vpn_evpn_config" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
   advertise_all_vni = var.bgp_l2vpn_advertise_vni
   advertise_svi_ip = var.bgp_l2vpn_advertise_svi
-  rt_auto_derive = false
+  rt_auto_derive = var.rt_auto_derive
 }
 
 resource "vyos_protocols_bgp_address_family_l2vpn_evpn_flooding" "l2vpn_evpn_flooding" {
@@ -83,14 +90,6 @@ resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw2" {
   }
 }
 
-
-resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_6" {
-  depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
-  identifier = { vni = 9006 }
-  rd = "${local.vxlan_loopback_net}:9006"
-  #advertise_default_gw = true
-  advertise_svi_ip     = var.bgp_l2vpn_vni_advertise_svi
-}
 
 
 resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback" {

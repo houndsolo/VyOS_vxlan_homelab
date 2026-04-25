@@ -50,3 +50,45 @@ dns = {
   domain_name = "lylat.space"
   domain_search = ["lylat.space"]
 }
+
+vrfs = {
+  lylat_lan = {
+    table = 1337
+  }
+  lylat_service = {
+    table = 1000
+  }
+}
+
+vnis = {
+  6 = {
+    vni         = 9006
+    vlan_id     = 6
+    vrf         = "lylat_service"
+    anycast_gw_ip  = "10.6.0.5"
+    anycast_gw_cidr  = 16
+    anycast_mac = "0e:00:00:10:00:06"
+    advertise_default_gw = false
+    advertise_svi_ip = false
+  }
+  8 = {
+    vni         = 9008
+    vlan_id     = 8
+    vrf         = "lylat_lan"
+    anycast_gw_ip  = "10.8.0.5"
+    anycast_gw_cidr  = 16
+    anycast_mac = "0e:00:00:10:00:08"
+    advertise_default_gw = false
+    advertise_svi_ip = true
+  }
+  9 = {
+    vni         = 9009
+    vlan_id     = 9
+    vrf         = "lylat_lan"
+    anycast_gw_ip  = "10.9.0.5"
+    anycast_gw_cidr  = 16
+    anycast_mac = "0e:00:00:10:00:09"
+    advertise_default_gw = false
+    advertise_svi_ip = true
+  }
+}

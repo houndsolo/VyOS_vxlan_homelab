@@ -1,3 +1,21 @@
+resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_profile_1" {
+  for_each = var.vnis
+  depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
+  identifier = { vni = each.value.vni }
+  rd = "${local.vxlan_loopback_net}:${tostring(each.value.vni)}"
+  advertise_default_gw = each.value.advertise_default_gw
+  advertise_svi_ip     = each.value.advertise_svi_ip
+}
+
+#resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_6" {
+#  depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
+#  identifier = { vni = 9006 }
+#  rd = "${local.vxlan_loopback_net}:9006"
+#  #advertise_default_gw = true
+#  advertise_svi_ip     = var.bgp_l2vpn_vni_advertise_svi
+#}
+
+
 resource "vyos_interfaces_vxlan" "svd_vxlan_intf" {
   depends_on = [vyos_protocols_bgp_neighbor.bgp_neighbors_sw2]
   identifier = { vxlan = "vxlan0" }
@@ -24,53 +42,19 @@ resource "vyos_interfaces_vxlan" "svd_vxlan_intf" {
   }
 }
 
-resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_6_mapping" {
+resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_profile_1_mapping" {
   #  depends_on = [vyos_interfaces_bridge_vif.br0_vif_2006_anycast_gateway]
+  for_each = var.vnis
   depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
   identifier = {
     #which vlan on local leaf
-    vlan_to_vni = "6"
+    vlan_to_vni = tostring(each.value.vlan_id)
     vxlan = "vxlan0"
   }
   #global vni
-  vni = 9006
+  vni = each.value.vni
 }
 
-resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_80_mapping" {
-  #  depends_on = [vyos_interfaces_bridge_vif.br0_vif_2006_anycast_gateway]
-  depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
-  identifier = {
-    #which vlan on local leaf
-    vlan_to_vni = "80"
-    vxlan = "vxlan0"
-  }
-  #global vni
-  vni = 9080
-}
-
-resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_90_mapping" {
-  #  depends_on = [vyos_interfaces_bridge_vif.br0_vif_2006_anycast_gateway]
-  depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
-  identifier = {
-    #which vlan on local leaf
-    vlan_to_vni = "90"
-    vxlan = "vxlan0"
-  }
-  #global vni
-  vni = 9090
-}
-
-resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_9_mapping" {
-  #  depends_on = [vyos_interfaces_bridge_vif.br0_vif_2006_anycast_gateway]
-  depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
-  identifier = {
-    #which vlan on local leaf
-    vlan_to_vni = "9"
-    vxlan = "vxlan0"
-  }
-  #global vni
-  vni = 9009
-}
 
 resource "vyos_interfaces_bridge" "vxlan_bridge" {
   depends_on = [vyos_interfaces_vxlan.svd_vxlan_intf]
@@ -94,10 +78,7 @@ resource "vyos_interfaces_bridge_member_interface" "br0_eth3" {
     interface = "eth3"
   }
   allowed_vlan = [
-    "6",
-    "9",
-    "80",
-    "90",
+    for vni in values(var.vnis) : tostring(vni.vlan_id)
   ]
 }
 

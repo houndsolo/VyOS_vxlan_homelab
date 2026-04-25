@@ -52,7 +52,11 @@ variable "bgp_l2vpn_advertise_svi" {
 }
 variable "bgp_l2vpn_advertise_vni" {
 }
-variable "bgp_l2vpn_vni_advertise_svi" {
-}
 variable "fabric" {
+}
+variable "rt_auto_derive" {
+}
+variable "vrfs" {
+}
+variable "vnis" {
 }

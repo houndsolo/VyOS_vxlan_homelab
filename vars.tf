@@ -13,11 +13,11 @@ locals {
   vxlan_nolearning = true
   vxlan_vni_filter = false
 
+  rt_auto_derive = false
   bgp_l2vpn_flooding_disable = false
   bgp_l2vpn_her = true
-  bgp_l2vpn_advertise_svi = false
+  bgp_l2vpn_advertise_svi = true
   bgp_l2vpn_advertise_vni = true
-  bgp_l2vpn_vni_advertise_svi = true
 }
 
 variable "fabric" {
@@ -46,3 +46,26 @@ variable "dns" {
   })
 }
 
+
+variable "vnis" {
+  description = "VXLAN VNIs and per-VNI properties"
+
+  type = map(object({
+    vni         = number
+    vlan_id     = number
+    vrf         = optional(string)
+    anycast_gw_ip  = optional(string)
+    anycast_gw_cidr  = optional(string)
+    anycast_mac = optional(string)
+    description = optional(string)
+    advertise_default_gw = bool
+    advertise_svi_ip = bool
+  }))
+}
+
+variable "vrfs" {
+  description = "vrfs"
+  type = map(object({
+    table      = number
+  }))
+}
