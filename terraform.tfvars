@@ -37,6 +37,12 @@ fabric = {
       id = 21
     }
   }
+  leaves_greatfox = {
+    greatfox = {
+      hypervisor_node = "greatfox"
+      id = 20
+    }
+  }
 }
 
 dns = {

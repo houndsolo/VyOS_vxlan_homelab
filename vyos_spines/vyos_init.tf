@@ -13,7 +13,7 @@ resource "vyos_interfaces_dummy" "dummy_interface" {
 
 
 resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
-  for_each = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
 
   identifier = {
     ethernet = "eth1"
@@ -26,7 +26,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
 }
 
 resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
-  for_each = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
 
   identifier = {
     ethernet = "eth2"
@@ -39,11 +39,11 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth1" {
-  for_each = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
   identifier = { interface = "eth1.${1000+100*var.node.id+each.value.id}" }
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth2" {
-  for_each = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
   identifier = { interface = "eth2.${2000+100*var.node.id+each.value.id}" }
 }

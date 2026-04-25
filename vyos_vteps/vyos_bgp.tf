@@ -1,7 +1,8 @@
 resource "vyos_protocols_bgp" "enable_bgp" {
   depends_on = [
     #vyos_protocols_bfd_peer.spine_bfd_peers,
-    vyos_interfaces_ethernet.link_to_vms
+    vyos_interfaces_ethernet.link_to_vms,
+    vyos_interfaces_dummy.dummy_interface
   ]
   system_as = local.bgp_system_as
 }
@@ -61,7 +62,7 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as"
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw1" {
-  for_each      = var.spines
+  for_each      = var.fabric.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
   identifier = { neighbor = "eth1.${1000+100*each.value.id+var.node.id}" }
   interface = {
@@ -72,7 +73,7 @@ resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw1" {
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw2" {
-  for_each      = var.spines
+  for_each      = var.fabric.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
   identifier = { neighbor = "eth2.${2000+100*each.value.id+var.node.id}" }
   interface = {
@@ -88,7 +89,7 @@ resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_6" {
   identifier = { vni = 9006 }
   rd = "${local.vxlan_loopback_net}:9006"
   #advertise_default_gw = true
-  #advertise_svi_ip     = var.bgp_l2vpn_vni_advertise_svi
+  advertise_svi_ip     = var.bgp_l2vpn_vni_advertise_svi
 }
 
 
@@ -98,7 +99,7 @@ resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_
 }
 
 resource "vyos_protocols_bgp_neighbor" "vxlan_peering" {
-  for_each      = var.spines
+  for_each      = var.fabric.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_overlay]
   identifier = { neighbor = "10.255.240.${each.value.id}"}
   peer_group = "spine_overlay"

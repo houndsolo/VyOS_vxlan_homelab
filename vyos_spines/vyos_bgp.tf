@@ -35,7 +35,7 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as"
 
 
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw1" {
-  for_each      = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_underlay]
   identifier = { neighbor = "eth1.${1000+100*var.node.id+each.value.id}" }
   interface = {
@@ -46,7 +46,7 @@ resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw1" {
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw2" {
-  for_each      = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_underlay]
   identifier = { neighbor = "eth2.${2000+100*var.node.id+each.value.id}" }
   interface = {
@@ -56,21 +56,12 @@ resource "vyos_protocols_bgp_neighbor" "bgp_neighbors_sw2" {
   }
 }
 
-#
-#resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_6" {
-#  depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
-#  identifier = { vni = 9006 }
-#  #advertise_default_gw = true
-#  advertise_svi_ip     = var.bgp_l2vpn_vni_advertise_svi
-#}
-#
-
 resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback" {
   identifier = { network = local.vxlan_loopback }
 }
 
 resource "vyos_protocols_bgp_neighbor" "vxlan_peering" {
-  for_each      = var.leaves
+  for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox)
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_overlay]
   identifier = { neighbor = "10.255.240.${each.value.id}"}
   peer_group = "leaf_overlay"

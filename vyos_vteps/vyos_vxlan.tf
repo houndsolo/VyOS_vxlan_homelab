@@ -24,44 +24,6 @@ resource "vyos_interfaces_vxlan" "svd_vxlan_intf" {
   }
 }
 
-resource "vyos_interfaces_bridge" "vxlan_bridge" {
-  depends_on = [vyos_interfaces_vxlan.svd_vxlan_intf]
-  identifier = {bridge = "br0"}
-  enable_vlan = true
-  mtu = "9169"
-}
-resource "vyos_interfaces_bridge_member_interface" "br0_vxlan0" {
-  depends_on = [vyos_interfaces_bridge.vxlan_bridge]
-  identifier = {
-    bridge = "br0"
-    interface = "vxlan0"
-  }
-}
-resource "vyos_interfaces_bridge_member_interface" "br0_eth3" {
-  depends_on = [vyos_interfaces_bridge_member_interface.br0_vxlan0]
-  identifier = {
-    bridge = "br0"
-    interface = "eth3"
-  }
-  allowed_vlan = [
-  "6",
-  ]
-}
-
-# no anycat gateway with flooding
-#resource "vyos_interfaces_bridge_vif" "br0_vif_9006_anycast_gateway" {
-#  depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
-#  identifier = {
-#    bridge = "br0"
-#    vif = 6
-#  }
-#  address = [
-#    "10.6.0.5/16"
-#  ]
-#  mac = "0e:00:00:${var.host_node.node_id}:ff:06"
-#  #mac = "0e:00:00:11:ff:06"
-#}
-
 resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_6_mapping" {
   #  depends_on = [vyos_interfaces_bridge_vif.br0_vif_2006_anycast_gateway]
   depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
@@ -72,5 +34,17 @@ resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_6_mapping" {
   }
   #global vni
   vni = 9006
+}
+
+resource "vyos_interfaces_vxlan_vlan_to_vni" "svd_vni_80_mapping" {
+  #  depends_on = [vyos_interfaces_bridge_vif.br0_vif_2006_anycast_gateway]
+  depends_on = [vyos_interfaces_bridge_member_interface.br0_eth3]
+  identifier = {
+    #which vlan on local leaf
+    vlan_to_vni = "80"
+    vxlan = "vxlan0"
+  }
+  #global vni
+  vni = 9080
 }
 

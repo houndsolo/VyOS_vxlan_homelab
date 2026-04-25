@@ -43,8 +43,5 @@ variable "bgp_l2vpn_advertise_vni" {
 }
 variable "bgp_l2vpn_vni_advertise_svi" {
 }
-variable "spines" {
+variable "fabric" {
 }
-variable "leaves" {
-}
-

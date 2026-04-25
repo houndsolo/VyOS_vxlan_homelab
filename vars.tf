@@ -1,7 +1,7 @@
 locals {
   vxlan_mtu = 9119
   disable_forwarding = false
-  disable_arp_filter = true
+  disable_arp_filter = false
   enable_arp_accept = false
   enable_arp_announce = false
   enable_directed_broadcast = true
@@ -17,7 +17,7 @@ locals {
   bgp_l2vpn_her = true
   bgp_l2vpn_advertise_svi = false
   bgp_l2vpn_advertise_vni = true
-  bgp_l2vpn_vni_advertise_svi = false
+  bgp_l2vpn_vni_advertise_svi = true
 }
 
 variable "fabric" {
@@ -27,6 +27,10 @@ variable "fabric" {
     }))
 
     leaves = map(object({
+      id  = number
+      hypervisor_node = string
+    }))
+    leaves_greatfox = map(object({
       id  = number
       hypervisor_node = string
     }))

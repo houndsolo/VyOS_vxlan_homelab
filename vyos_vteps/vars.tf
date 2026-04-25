@@ -8,7 +8,7 @@ locals {
   vxlan_source_interface = "dum240"
 
   vxlan_peers = {
-    for leaf_name, leaf in var.leaves:
+    for leaf_name, leaf in var.fabric.leaves:
     leaf_name => merge(leaf, {
       vxlan_loopback = "10.255.240.${leaf.id}"
     })
@@ -54,8 +54,5 @@ variable "bgp_l2vpn_advertise_vni" {
 }
 variable "bgp_l2vpn_vni_advertise_svi" {
 }
-variable "spines" {
+variable "fabric" {
 }
-variable "leaves" {
-}
-

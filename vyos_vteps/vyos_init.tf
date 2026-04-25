@@ -37,7 +37,7 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch1" {
 
 resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch1" {
   depends_on = [vyos_interfaces_ethernet.link_to_spines_switch1]
-  for_each = var.spines
+  for_each = var.fabric.spines
 
   identifier = {
     ethernet = "eth1"
@@ -51,7 +51,6 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch1" {
 
 resource "vyos_interfaces_ethernet" "link_to_spines_switch2" {
   depends_on = [vyos_interfaces_dummy.dummy_interface]
-  #  for_each = { for link in local.link_to_spines : tostring(link.eth_id) => link }
 
   identifier = { ethernet = "eth2" }
   description = "p2p-sw2"
@@ -65,8 +64,8 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch2" {
 }
 
 resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
-  depends_on = [vyos_interfaces_ethernet.link_to_spines_switch1]
-  for_each = var.spines
+  depends_on = [vyos_interfaces_ethernet.link_to_spines_switch2]
+  for_each = var.fabric.spines
 
   identifier = {
     ethernet = "eth2"
@@ -79,12 +78,12 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth1" {
-  for_each = var.spines
+  for_each = var.fabric.spines
   identifier = { interface = "eth1.${1000+100*each.value.id+var.node.id}" }
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth2" {
-  for_each = var.spines
+  for_each = var.fabric.spines
   identifier = { interface = "eth2.${2000+100*each.value.id+var.node.id}" }
 }
 
