@@ -3,6 +3,11 @@
 A network automation project using OpenTofu 1.9+ to deploy  VXLAN VMs on hypervisors for other virtual machines to connect to.
 
 
+-- note
+fdb entry  needs to be added for anycast gateway -- only for SingleVxlanDevice setups
+`ansible -i hosts.yml -a 'bash  -c  "sudo bridge fdb replace 0e:00:00:10:00:80 dev br0 self local"' vteps`
+
+
 ## 🏗️ Architecture
 Physical topology
 2 switches for connectivity [1 & 2]
@@ -34,7 +39,7 @@ sw2s2v10 - 2210
 - **Overlay Network**
   - iBGP Loopback interfaces: `10.255.240.[id]`
   - AS 700
- 
+
 
 ## 📁 Project Structure
 
