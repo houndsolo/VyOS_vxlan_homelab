@@ -33,17 +33,18 @@ provider "vyos" {
   overwrite_existing_resources_on_create = true
 }
 
-#provider "vyos" {
-#  alias = "border"
-#  endpoint ="https://10.20.1.80"
-#  api_key  = var.vyos_key
-#  certificate = {
-#    disable_verify = true
-#  }
-#  default_timeouts = 2
-#  overwrite_existing_resources_on_create = true
-#}
-#
+provider "vyos" {
+  alias = "border"
+  for_each = var.fabric.border_leaves
+  endpoint ="https://10.20.241.${tostring(each.value.id)}"
+  api_key  = var.vyos_key
+  certificate = {
+    disable_verify = true
+  }
+  default_timeouts = 2
+  overwrite_existing_resources_on_create = true
+}
+
 #provider "vyos" {
 #  alias = "remote"
 #  endpoint ="https://10.20.1.80"

@@ -37,6 +37,16 @@ fabric = {
       id = 21
     }
   }
+  border_leaves = {
+    border18  = {
+      hypervisor_node = "fichina"
+      id = 18
+    }
+    border19  = {
+      hypervisor_node = "eldarad"
+      id = 19
+    }
+  }
   leaves_greatfox = {
     greatfox = {
       hypervisor_node = "greatfox"

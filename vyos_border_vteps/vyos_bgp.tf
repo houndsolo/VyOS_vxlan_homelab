@@ -6,6 +6,7 @@ resource "vyos_protocols_bgp" "enable_bgp" {
   ]
   system_as = local.bgp_system_as
 }
+
 resource "vyos_protocols_bgp_parameters" "set_router_id" {
   router_id = local.vxlan_loopback_net
   fast_convergence = true
@@ -14,12 +15,6 @@ resource "vyos_protocols_bgp_parameters" "set_router_id" {
 resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" {
   multipath_relax = true
 }
-
-
-#resource "vyos_protocols_bgp_address_family_ipv4_unicast_maximum_paths" "bgp_multipath" {
-#  depends_on = [vyos_protocols_bgp.enable_bgp]
-#  ibgp = 4
-#}
 
 resource "vyos_protocols_bgp_address_family_l2vpn_evpn" "l2vpn_evpn_config" {
   depends_on = [vyos_protocols_bgp.enable_bgp]

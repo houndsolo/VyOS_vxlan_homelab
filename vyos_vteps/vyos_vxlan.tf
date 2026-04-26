@@ -7,14 +7,6 @@ resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_profile_1" {
   advertise_svi_ip     = each.value.advertise_svi_ip
 }
 
-#resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_6" {
-#  depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
-#  identifier = { vni = 9006 }
-#  rd = "${local.vxlan_loopback_net}:9006"
-#  #advertise_default_gw = true
-#  advertise_svi_ip     = var.bgp_l2vpn_vni_advertise_svi
-#}
-
 
 resource "vyos_interfaces_vxlan" "svd_vxlan_intf" {
   depends_on = [vyos_protocols_bgp_neighbor.bgp_neighbors_sw2]
