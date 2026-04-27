@@ -2,7 +2,8 @@ NOTE: attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-
 This did not work seamlessly:
 Non- VyOS API change required for anycast gateway
 - [Anycast gateway with SVD - FRR docs](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
-- [VyOS Issue](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
+- [VyOS Issue 1](https://vyos.dev/T5189)
+- [VyOS Issue 2](https://vyos.dev/T7274) - try this fix?
 Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
 
 # VyOS VXLAN Homelab
