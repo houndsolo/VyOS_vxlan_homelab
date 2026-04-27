@@ -1,4 +1,8 @@
-NOTE: attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-enhancements-introducing-single-vxlan-device-support
+NOTE1: cannot seem to properly redistribute evpn host routes into ipv4-vpn af? 
+Can do ipv4-vpn into VRF:ipv4-unicast into evpn
+
+
+NOTE2: attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-enhancements-introducing-single-vxlan-device-support
 This did not work seamlessly:
 Non- VyOS API change required for anycast gateway
 - [Anycast gateway with SVD - FRR docs](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
