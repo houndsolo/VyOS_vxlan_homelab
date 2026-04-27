@@ -1,7 +1,12 @@
+NOTE: attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-enhancements-introducing-single-vxlan-device-support
+This did not work seamlessly:
+Non- VyOS API change required for anycast gateway
+- [Anycast gateway with SVD - FRR docs](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
+- [VyOS Issue](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
+Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
+
 # VyOS VXLAN Homelab
-
 OpenTofu-driven VyOS VXLAN/EVPN homelab fabric running on a mix of bare-metal routers and virtual VyOS routers on Proxmox.
-
 This repository is used to build and manage a routed underlay, BGP overlay, VXLAN interfaces, bridge/VLAN attachment, VRFs, and EVPN-related configuration for a small spine/leaf fabric.
 
 ---
