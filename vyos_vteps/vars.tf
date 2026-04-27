@@ -56,7 +56,5 @@ variable "fabric" {
 }
 variable "rt_auto_derive" {
 }
-variable "vrfs" {
-}
 variable "vnis" {
 }

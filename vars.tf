@@ -8,7 +8,7 @@ locals {
   enable_proxy_arp = false
   proxy_arp_pvlan = false
 
-  vxlan_external = true
+  vxlan_external = false
   vxlan_neighbor_suppress = false
   vxlan_nolearning = true
   vxlan_vni_filter = false
@@ -55,8 +55,8 @@ variable "vnis" {
   type = object({
     l2 = map(object({
       vni         = number
+      vrf         = string
       vlan_id     = optional(number)
-      vrf         = optional(string)
       anycast_gw_ip  = optional(string)
       anycast_gw_cidr  = optional(string)
       anycast_mac = optional(string)
@@ -65,16 +65,12 @@ variable "vnis" {
       advertise_svi_ip = bool
     }))
     l3 = map(object({
-      vni_id      = number
+      vni      = number
       vrf         = string
+      vrf_table   = number
+      rt_imports  = string
       description = optional(string)
     }))
   })
 }
 
-variable "vrfs" {
-  description = "vrfs"
-  type = map(object({
-    table      = number
-  }))
-}

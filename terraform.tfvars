@@ -61,15 +61,6 @@ dns = {
   domain_search = ["lylat.space"]
 }
 
-vrfs = {
-  lylat_lan = {
-    table = 1337
-  }
-  lylat_service = {
-    table = 1000
-  }
-}
-
 vnis = {
   l2 ={
     6 = {
@@ -107,10 +98,19 @@ vnis = {
     }
   }
   l3 = {
-    69000 = {
+    6600 = {
       type        = "L3"
-      vni         = 69000
+      vni         = 6600
+      vrf         = "lylat_service"
+      vrf_table   = 1000
+      rt_imports  = null
+    }
+    6900 = {
+      type        = "L3"
+      vni         = 6900
       vrf         = "lylat_lan"
+      vrf_table   = 1337
+      rt_imports  = "420:1337"
     }
   }
 }

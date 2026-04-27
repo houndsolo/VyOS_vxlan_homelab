@@ -21,7 +21,6 @@ module "configure_vyos_vms" {
   bgp_l2vpn_advertise_vni =  local.bgp_l2vpn_advertise_vni
   rt_auto_derive = local.rt_auto_derive
   vnis = var.vnis
-  vrfs = var.vrfs
 
   vxlan_mtu = local.vxlan_mtu
   disable_arp_filter = local.disable_arp_filter
@@ -51,7 +50,6 @@ module "configure_vyos_vms_greatfox" {
   bgp_l2vpn_advertise_vni =  local.bgp_l2vpn_advertise_vni
   rt_auto_derive = local.rt_auto_derive
   vnis = var.vnis
-  vrfs = var.vrfs
 
   vxlan_mtu = local.vxlan_mtu
   disable_arp_filter = local.disable_arp_filter
@@ -81,7 +79,6 @@ module "configure_vyos_vms_border_vteps" {
   bgp_l2vpn_advertise_vni =  local.bgp_l2vpn_advertise_vni
   rt_auto_derive = local.rt_auto_derive
   vnis = var.vnis
-  vrfs = var.vrfs
 
   vxlan_mtu = local.vxlan_mtu
   disable_arp_filter = local.disable_arp_filter
