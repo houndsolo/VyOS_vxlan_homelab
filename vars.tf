@@ -52,19 +52,24 @@ variable "dns" {
 
 
 variable "vnis" {
-  description = "VXLAN VNIs and per-VNI properties"
-
-  type = map(object({
-    vni         = number
-    vlan_id     = number
-    vrf         = optional(string)
-    anycast_gw_ip  = optional(string)
-    anycast_gw_cidr  = optional(string)
-    anycast_mac = optional(string)
-    description = optional(string)
-    advertise_default_gw = bool
-    advertise_svi_ip = bool
-  }))
+  type = object({
+    l2 = map(object({
+      vni         = number
+      vlan_id     = optional(number)
+      vrf         = optional(string)
+      anycast_gw_ip  = optional(string)
+      anycast_gw_cidr  = optional(string)
+      anycast_mac = optional(string)
+      description = optional(string)
+      advertise_default_gw = bool
+      advertise_svi_ip = bool
+    }))
+    l3 = map(object({
+      vni_id      = number
+      vrf         = string
+      description = optional(string)
+    }))
+  })
 }
 
 variable "vrfs" {

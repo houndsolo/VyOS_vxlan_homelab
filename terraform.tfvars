@@ -71,34 +71,46 @@ vrfs = {
 }
 
 vnis = {
-  6 = {
-    vni         = 9006
-    vlan_id     = 6
-    vrf         = "lylat_service"
-    anycast_gw_ip  = "10.6.0.5"
-    anycast_gw_cidr  = 16
-    anycast_mac = "0e:00:00:10:00:06"
-    advertise_default_gw = false
-    advertise_svi_ip = false
+  l2 ={
+    6 = {
+      type        = "L2"
+      vni         = 9006
+      vlan_id     = 6
+      vrf         = "lylat_service"
+      anycast_gw_ip  = "10.6.0.5"
+      anycast_gw_cidr  = 16
+      anycast_mac = "0e:00:00:10:00:06"
+      advertise_default_gw = false
+      advertise_svi_ip = false
+    }
+    8 = {
+      type        = "L2"
+      vni         = 9008
+      vlan_id     = 8
+      vrf         = "lylat_lan"
+      anycast_gw_ip  = "10.8.0.5"
+      anycast_gw_cidr  = 16
+      anycast_mac = "0e:00:00:10:00:08"
+      advertise_default_gw = true
+      advertise_svi_ip = true
+    }
+    9 = {
+      type        = "L2"
+      vni         = 9009
+      vlan_id     = 9
+      vrf         = "lylat_lan"
+      anycast_gw_ip  = "10.9.0.5"
+      anycast_gw_cidr  = 16
+      anycast_mac = "0e:00:00:10:00:09"
+      advertise_default_gw = true
+      advertise_svi_ip = true
+    }
   }
-  8 = {
-    vni         = 9008
-    vlan_id     = 8
-    vrf         = "lylat_lan"
-    anycast_gw_ip  = "10.8.0.5"
-    anycast_gw_cidr  = 16
-    anycast_mac = "0e:00:00:10:00:08"
-    advertise_default_gw = false
-    advertise_svi_ip = true
-  }
-  9 = {
-    vni         = 9009
-    vlan_id     = 9
-    vrf         = "lylat_lan"
-    anycast_gw_ip  = "10.9.0.5"
-    anycast_gw_cidr  = 16
-    anycast_mac = "0e:00:00:10:00:09"
-    advertise_default_gw = false
-    advertise_svi_ip = true
+  l3 = {
+    69000 = {
+      type        = "L3"
+      vni         = 69000
+      vrf         = "lylat_lan"
+    }
   }
 }

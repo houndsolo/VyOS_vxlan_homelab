@@ -1,7 +1,7 @@
 provider "vyos" {
   alias = "leaves"
   for_each = var.fabric.leaves
-  endpoint ="https://10.20.241.${tostring(each.value.id)}"
+  endpoint ="https://10.20.10.${tostring(each.value.id)}"
   api_key  = var.vyos_key
   certificate = {
     disable_verify = true
@@ -24,7 +24,7 @@ provider "vyos" {
 
 provider "vyos" {
   alias = "greatfox"
-  endpoint ="https://10.20.241.20"
+  endpoint ="https://10.20.10.20"
   api_key  = var.vyos_key
   certificate = {
     disable_verify = true
@@ -36,7 +36,7 @@ provider "vyos" {
 provider "vyos" {
   alias = "border"
   for_each = var.fabric.border_leaves
-  endpoint ="https://10.20.241.${tostring(each.value.id)}"
+  endpoint ="https://10.20.10.${tostring(each.value.id)}"
   api_key  = var.vyos_key
   certificate = {
     disable_verify = true

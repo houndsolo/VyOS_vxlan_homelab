@@ -7,11 +7,13 @@ resource "vyos_protocols_bgp" "enable_bgp" {
   system_as = local.bgp_system_as
 }
 resource "vyos_protocols_bgp_parameters" "set_router_id" {
+  depends_on = [vyos_protocols_bgp.enable_bgp]
   router_id = local.vxlan_loopback_net
   fast_convergence = true
 }
 
 resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" {
+  depends_on = [vyos_protocols_bgp.enable_bgp]
   multipath_relax = true
 }
 
