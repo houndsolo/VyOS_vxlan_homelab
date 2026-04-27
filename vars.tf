@@ -69,6 +69,7 @@ variable "vnis" {
       vrf         = string
       vrf_table   = number
       rt_imports  = string
+      rt_exports  = string
       description = optional(string)
     }))
   })

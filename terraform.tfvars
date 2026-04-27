@@ -104,6 +104,7 @@ vnis = {
       vrf         = "lylat_service"
       vrf_table   = 1000
       rt_imports  = null
+      rt_exports  = "700:6600"
     }
     6900 = {
       type        = "L3"
@@ -111,6 +112,7 @@ vnis = {
       vrf         = "lylat_lan"
       vrf_table   = 1337
       rt_imports  = "420:1337"
+      rt_exports  = "700:6900"
     }
   }
 }
