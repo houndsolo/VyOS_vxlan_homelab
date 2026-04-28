@@ -21,7 +21,7 @@ resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" 
 resource "vyos_protocols_bgp_address_family_l2vpn_evpn" "l2vpn_evpn_config" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
   advertise_all_vni = var.bgp_l2vpn_advertise_vni
-  advertise_svi_ip = var.bgp_l2vpn_advertise_svi
+  advertise_svi_ip = false
   rt_auto_derive = var.rt_auto_derive
 }
 

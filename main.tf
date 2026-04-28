@@ -1,11 +1,11 @@
-module "configure_vyos_spines" {
-  for_each = var.fabric.spines
-  source = "./vyos_spines"
-  providers = { vyos = vyos.spines[each.key] }
-  node = each.value
-  dns = var.dns
-  fabric= var.fabric
-}
+#module "configure_vyos_spines" {
+#  for_each = var.fabric.spines
+#  source = "./vyos_spines"
+#  providers = { vyos = vyos.spines[each.key] }
+#  node = each.value
+#  dns = var.dns
+#  fabric= var.fabric
+#}
 
 module "configure_vyos_vms" {
   for_each = var.fabric.leaves

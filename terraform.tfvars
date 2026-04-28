@@ -63,55 +63,50 @@ dns = {
 
 vnis = {
   l2 ={
-    6 = {
-      type        = "L2"
-      vni         = 9006
-      vlan_id     = 6
-      vrf         = "lylat_service"
-      anycast_gw_ip  = "10.6.0.5"
-      anycast_gw_cidr  = 16
-      anycast_mac = "0e:00:00:10:00:06"
-      advertise_default_gw = false
-      advertise_svi_ip = false
-    }
+    #6 = {
+    #  vni         = 9006
+    #  vlan_id     = 6
+    #  vrf         = "lylat_service"
+    #  anycast_gw_ip  = "10.6.0.5"
+    #  anycast_gw_cidr  = 16
+    #  anycast_mac = "0e:00:00:10:00:06"
+    #  advertise_default_gw = false
+    #  advertise_svi_ip = false
+    #}
     8 = {
-      type        = "L2"
       vni         = 9008
       vlan_id     = 8
       vrf         = "lylat_lan"
       anycast_gw_ip  = "10.8.0.5"
       anycast_gw_cidr  = 16
       anycast_mac = "0e:00:00:10:00:08"
-      advertise_default_gw = true
-      advertise_svi_ip = true
+      advertise_default_gw = false
+      advertise_svi_ip = false
     }
     9 = {
-      type        = "L2"
       vni         = 9009
       vlan_id     = 9
       vrf         = "lylat_lan"
       anycast_gw_ip  = "10.9.0.5"
       anycast_gw_cidr  = 16
       anycast_mac = "0e:00:00:10:00:09"
-      advertise_default_gw = true
-      advertise_svi_ip = true
+      advertise_default_gw = false
+      advertise_svi_ip = false
     }
   }
   l3 = {
-    6600 = {
-      type        = "L3"
-      vni         = 6600
-      vrf         = "lylat_service"
-      vrf_table   = 1000
-      rt_imports  = null
-      rt_exports  = "700:6600"
-    }
+    #6600 = {
+    #  vni         = 6600
+    #  vrf         = "lylat_service"
+    #  vrf_table   = 1000
+    #  rt_imports  = "700:6600"
+    #  rt_exports  = "700:6600"
+    #}
     6900 = {
-      type        = "L3"
       vni         = 6900
       vrf         = "lylat_lan"
       vrf_table   = 1337
-      rt_imports  = "420:1337"
+      rt_imports  = "700:6900 420:1337"
       rt_exports  = "700:6900"
     }
   }

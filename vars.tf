@@ -16,7 +16,7 @@ locals {
   rt_auto_derive = false
   bgp_l2vpn_flooding_disable = false
   bgp_l2vpn_her = true
-  bgp_l2vpn_advertise_svi = true
+  bgp_l2vpn_advertise_svi = false
   bgp_l2vpn_advertise_vni = true
 }
 

@@ -40,7 +40,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
   identifier = {peer_group = "spine_underlay"}
   capability = {
-    dynamic = true
+    #dynamic = true
     extended_nexthop = true
   }
   remote_as = "external"
