@@ -175,7 +175,7 @@ VRF lylat_service imports:
 ```
 ---
 
-Single Vxlan Device issues
+### Single Vxlan Device issues
 -- attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-enhancements-introducing-single-vxlan-device-support
 This did not work seamlessly:
 Non-VyOS API change required for anycast gateway
@@ -183,4 +183,4 @@ Non-VyOS API change required for anycast gateway
 - [VyOS Issue 1](https://vyos.dev/T5189)
 - [VyOS Issue 2](https://vyos.dev/T7274) - try this fix?
 
-\Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
+Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
