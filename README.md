@@ -2,15 +2,6 @@ NOTE1: cannot seem to properly redistribute evpn host routes into ipv4-vpn af?
 Can do ipv4-vpn into VRF:ipv4-unicast into evpn
 
 
-NOTE2: attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-enhancements-introducing-single-vxlan-device-support
-This did not work seamlessly:
-Non- VyOS API change required for anycast gateway
-- [Anycast gateway with SVD - FRR docs](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
-- [VyOS Issue 1](https://vyos.dev/T5189)
-- [VyOS Issue 2](https://vyos.dev/T7274) - try this fix?
-
-\Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
-
 # VyOS VXLAN Homelab
 OpenTofu-driven VyOS VXLAN/EVPN homelab fabric running on a mix of bare-metal routers and virtual VyOS routers on Proxmox.
 This repository is used to build and manage a routed underlay, BGP overlay, VXLAN interfaces, bridge/VLAN attachment, VRFs, and EVPN-related configuration for a small spine/leaf fabric.
@@ -81,13 +72,9 @@ Overlay peering is built between VTEPs using loopback address.
 
 ### Spine Layer
 
-The spine routers provide routed underlay reachability.
+- evpn route reflectors
+- no vrfs exist
 
-- 2 x VyOS spine routers
-- Bare-metal
-- Connected to both physical switches
-- Run eBGP underlay sessions toward leaves over ipv6 link-local
-- Advertise/learn VTEP loopbacks used for overlay reachability
 
 ### Leaf Layer
 
@@ -96,9 +83,8 @@ The leaves are VyOS VMs running on Proxmox.
 - 7 x virtual VyOS leaf routers in cluster
 - 1 x virtual VyOS leaf router on daily PVE node
 - One leaf/VTEP per hypervisor node
-- Each leaf connects to both switches and both spines
-- Each leaf participates in the VXLAN/EVPN overlay
-- Each leaf can host bridge/VLAN/VNI attachment for local workloads
+- Each leaf connects to both switches and both spines - 4 way ECMP
+
 
 ### Border Leaves
 
@@ -106,7 +92,7 @@ Border leaves provide external connectivity.
 
 - Import/export selected VRF routes from external sources
 - Provide external routing toward upstream/core/firewall devices via EVPN Type 5
-- Leak routes between selected VRFs if desired
+- Leak routes between selected VRFs
 
 ---
 
@@ -127,6 +113,9 @@ Current underlay model:
 node ASN = 700 + node_id
 ```
 
+So the only IP address configured per Spine/Leaf (other than anycast gateways) is the loopback(dummy) interface for Vtep peering
+ezpz
+
 ### Overlay
 
 The overlay provides VXLAN/EVPN control-plane reachability.
@@ -146,19 +135,12 @@ Current overlay model:
 
 The RD makes routes unique in BGP.
 if we used common RD, multipath would not happen
+Unique RD Per switch!
 
 Recommended pattern:
 
 ```text
-<router-id>:<vni>
-```
-
-Example:
-
-```text
-10.255.240.10:9006
-10.255.240.11:9006
-10.255.240.12:9006
+<router-id>:<vni> 
 ```
 
 This means each VTEP exporting the same VNI still produces unique EVPN routes.
@@ -166,18 +148,11 @@ This means each VTEP exporting the same VNI still produces unique EVPN routes.
 #### Route Target
 
 The RT controls import/export policy.
-
-Recommended simple homelab pattern:
-
+Single RT per L2VNI / L3VNI
 ```text
 target:<fabric-asn>:<vni>
 ```
 
-Example:
-
-```text
-target:700:9006
-```
 
 For a single shared L2/L3 segment, all participating VTEPs can export and import the same RT.
 
@@ -198,3 +173,14 @@ VRF lylat_service imports:
   - target:700:9010
   - target:700:9020
 ```
+
+
+Single Vxlan Device issues
+-- attempted to use Single Vxlan Device(SVD) https://blog.vyos.io/evpn-vxlan-enhancements-introducing-single-vxlan-device-support
+This did not work seamlessly:
+Non-VyOS API change required for anycast gateway
+- [Anycast gateway with SVD - FRR docs](https://docs.frrouting.org/en/latest/evpn.html#anycast-gateways-with-single-vxlan-device)
+- [VyOS Issue 1](https://vyos.dev/T5189)
+- [VyOS Issue 2](https://vyos.dev/T7274) - try this fix?
+
+\Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
