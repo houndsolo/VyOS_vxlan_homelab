@@ -9,7 +9,7 @@ locals {
   proxy_arp_pvlan = false
 
   vxlan_external = false
-  vxlan_neighbor_suppress = true
+  vxlan_neighbor_suppress = false
   vxlan_nolearning = true
   vxlan_vni_filter = false
 
@@ -70,6 +70,7 @@ variable "vnis" {
       vrf_table   = number
       rt_imports  = string
       rt_exports  = string
+      ext_l3_vlan  = number
       description = optional(string)
     }))
   })

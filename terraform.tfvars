@@ -38,14 +38,14 @@ fabric = {
     }
   }
   border_leaves = {
-    border18  = {
-      hypervisor_node = "fichina"
-      id = 18
-    }
-    border19  = {
-      hypervisor_node = "eldarad"
-      id = 19
-    }
+    # border18  = {
+    #   hypervisor_node = "fichina"
+    #   id = 18
+    # }
+    # border19  = {
+    #   hypervisor_node = "eldarad"
+    #   id = 19
+    # }
   }
   leaves_greatfox = {
     greatfox = {
@@ -108,6 +108,7 @@ vnis = {
       vrf_table   = 1337
       rt_imports  = "700:6900 420:1337"
       rt_exports  = "700:6900"
+      ext_l3_vlan = 69
     }
   }
 }
