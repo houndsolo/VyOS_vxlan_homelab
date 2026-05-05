@@ -52,18 +52,11 @@ resource "vyos_interfaces_ethernet" "set_eth3_mtu" {
   identifier = { ethernet = "eth3" }
   description = "FW-WAN connectivity"
   mtu = "9169"
-  offload = {
-    gro = true
-    gso = true
-    sg  = true
-    tso = true
-    hw_tc_offload = false
-    lro = false
-    rfs = false
-    rps = false
-  }
   lifecycle {
-    ignore_changes = [hw_id]
+    ignore_changes = [
+      hw_id,
+      offload
+    ]
   }
 }
 

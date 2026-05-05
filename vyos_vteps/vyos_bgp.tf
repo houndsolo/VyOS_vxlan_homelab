@@ -30,6 +30,15 @@ resource "vyos_protocols_bgp_address_family_l2vpn_evpn" "l2vpn_evpn_config" {
   rt_auto_derive = var.rt_auto_derive
 }
 
+resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_bgp_config" {
+  for_each = var.vnis.l2
+  depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
+  identifier = { vni = each.value.vni }
+  rd = "${local.vxlan_loopback_net}:${tostring(each.value.vni)}"
+  advertise_default_gw = each.value.advertise_default_gw
+  advertise_svi_ip     = each.value.advertise_svi_ip
+}
+
 resource "vyos_protocols_bgp_address_family_l2vpn_evpn_flooding" "l2vpn_evpn_flooding" {
   depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
   disable = var.bgp_l2vpn_flooding_disable

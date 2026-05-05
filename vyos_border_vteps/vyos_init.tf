@@ -30,7 +30,8 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch1" {
 
     lifecycle {
       ignore_changes = [
-        hw_id
+      hw_id,
+      offload
       ]
     }
 }
@@ -58,7 +59,8 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch2" {
 
     lifecycle {
       ignore_changes = [
-        hw_id
+      hw_id,
+      offload
       ]
     }
 }
@@ -94,7 +96,8 @@ resource "vyos_interfaces_ethernet" "link_to_vms" {
   mtu = "9119"
   lifecycle {
     ignore_changes = [
-      hw_id
+      hw_id,
+      offload
     ]
   }
 }

@@ -28,11 +28,12 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch1" {
   description = "p2p-sw1"
   mtu = "9169"
 
-    lifecycle {
-      ignore_changes = [
-        hw_id
-      ]
-    }
+  lifecycle {
+    ignore_changes = [
+      hw_id,
+      offload
+    ]
+  }
 }
 
 resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch1" {
@@ -56,11 +57,12 @@ resource "vyos_interfaces_ethernet" "link_to_spines_switch2" {
   description = "p2p-sw2"
   mtu = "9169"
 
-    lifecycle {
-      ignore_changes = [
-        hw_id
-      ]
-    }
+  lifecycle {
+    ignore_changes = [
+      hw_id,
+      offload
+    ]
+  }
 }
 
 resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
@@ -94,7 +96,8 @@ resource "vyos_interfaces_ethernet" "link_to_vms" {
   mtu = "9119"
   lifecycle {
     ignore_changes = [
-      hw_id
+      hw_id,
+      offload
     ]
   }
 }
