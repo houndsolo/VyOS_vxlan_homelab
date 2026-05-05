@@ -19,7 +19,7 @@ provider "vyos" {
     disable_verify = true
   }
   default_timeouts = 2
-  #overwrite_existing_resources_on_create = true
+  overwrite_existing_resources_on_create = true
 }
 
 provider "vyos" {

@@ -7,7 +7,7 @@
 #  fabric= var.fabric
 #}
 
-module "configure_vyos_vms_border_spines" {
+module "configure_vyos_border_spines" {
 
   for_each = var.fabric.spines
   source = "./vyos_spines"
