@@ -1,3 +1,40 @@
+resource "vyos_vrf_name" "create_vrfs" {
+  for_each = var.vnis.l3
+
+  identifier = { name = each.value.vrf }
+
+  table = each.value.vrf_table
+  vni   = each.value.vni
+
+  protocols = {
+    bgp = {
+      system_as = local.bgp_system_as
+
+      parameters = {
+        router_id = local.vxlan_loopback_net
+
+        bestpath = {
+          as_path = { multipath_relax = true }
+        }
+      }
+      address_family = {
+        ipv4_unicast = {
+          soft_reconfiguration = {inbound = true}
+        }
+        l2vpn_evpn = {
+          rd = "${local.vxlan_loopback_net}:${each.value.vni}"
+          route_target = {
+            both = ["${local.bgp_system_as}:${each.value.vni}"]
+          }
+          advertise = {
+            ipv4 = { unicast = {} }
+          }
+        }
+      }
+    }
+  }
+}
+
 resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "vni_bgp_config" {
   for_each = var.vnis.l2
   depends_on = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
@@ -51,43 +88,6 @@ resource "vyos_interfaces_bridge_member_interface" "br0_vxlan0" {
   identifier = {
     bridge = "br${each.value.vni}"
     interface = "vxlan${each.value.vni}"
-  }
-}
-
-resource "vyos_vrf_name" "create_vrfs" {
-  for_each = var.vnis.l3
-
-  identifier = { name = each.value.vrf }
-
-  table = each.value.vrf_table
-  vni   = each.value.vni
-
-  protocols = {
-    bgp = {
-      system_as = local.bgp_system_as
-
-      parameters = {
-        router_id = local.vxlan_loopback_net
-
-        bestpath = {
-          as_path = { multipath_relax = true }
-        }
-      }
-      address_family = {
-        ipv4_unicast = {
-          soft_reconfiguration = {inbound = true}
-        }
-        l2vpn_evpn = {
-          rd = "${local.vxlan_loopback_net}:${each.value.vni}"
-          route_target = {
-            both = ["${local.bgp_system_as}:${each.value.vni}"]
-          }
-          advertise = {
-            ipv4 = { unicast = {} }
-          }
-        }
-      }
-    }
   }
 }
 

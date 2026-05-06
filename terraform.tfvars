@@ -63,16 +63,16 @@ dns = {
 
 vnis = {
   l2 ={
-    #6 = {
-    #  vni         = 9006
-    #  vlan_id     = 6
-    #  vrf         = "lylat_service"
-    #  anycast_gw_ip  = "10.6.0.5"
-    #  anycast_gw_cidr  = 16
-    #  anycast_mac = "0e:00:00:10:00:06"
-    #  advertise_default_gw = false
-    #  advertise_svi_ip = false
-    #}
+    6 = {
+      vni         = 9006
+      vlan_id     = 6
+      vrf         = "lylat_service"
+      anycast_gw_ip  = "10.6.0.5"
+      anycast_gw_cidr  = 16
+      anycast_mac = "0e:00:00:10:00:06"
+      advertise_default_gw = false
+      advertise_svi_ip = false
+    }
     8 = {
       vni         = 9008
       vlan_id     = 8
@@ -95,18 +95,19 @@ vnis = {
     }
   }
   l3 = {
-    #6600 = {
-    #  vni         = 6600
-    #  vrf         = "lylat_service"
-    #  vrf_table   = 1000
-    #  rt_imports  = "700:6600"
-    #  rt_exports  = "700:6600"
-    #}
+    6600 = {
+      vni         = 6600
+      vrf         = "lylat_service"
+      vrf_table   = 1000
+      rt_imports  = "700:6600 700:6900"
+      rt_exports  = "700:6600"
+      ext_l3_vlan = 66
+    }
     6900 = {
       vni         = 6900
       vrf         = "lylat_lan"
       vrf_table   = 1337
-      rt_imports  = "700:6900 420:1337"
+      rt_imports  = "700:6900 700:6600 420:1337"
       rt_exports  = "700:6900"
       ext_l3_vlan = 69
     }

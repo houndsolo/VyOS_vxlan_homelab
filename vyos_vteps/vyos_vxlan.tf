@@ -101,9 +101,9 @@ resource "vyos_interfaces_bridge" "vxlan_bridge_L2" {
     vyos_interfaces_vxlan.vxlan_interfaces_L3
   ]
   identifier = {bridge = "br${each.value.vni}"}
-  #    ip = {
-  #      enable_arp_ignore = true
-  #    }
+  ip = {
+    enable_arp_accept = true
+  }
   mtu = "9169"
     address = [
       "${each.value.anycast_gw_ip}/${each.value.anycast_gw_cidr}"
@@ -119,6 +119,7 @@ resource "vyos_interfaces_bridge_member_interface" "br0_vxlan0" {
     vyos_interfaces_bridge.vxlan_bridge_L3
   ]
   for_each = merge(var.vnis.l2,var.vnis.l3)
+  #for_each = var.vnis.l2
   identifier = {
     bridge = "br${each.value.vni}"
     interface = "vxlan${each.value.vni}"
