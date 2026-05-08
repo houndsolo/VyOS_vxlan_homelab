@@ -22,7 +22,9 @@ resource "vyos_vrf_name" "create_vrfs" {
         l2vpn_evpn = {
           rd = "${local.vxlan_loopback_net}:${each.value.vni}"
           route_target = {
-            both = ["${local.bgp_system_as}:${each.value.vni}"]
+            #both = ["${local.bgp_system_as}:${each.value.vni}"]
+            import = each.value.rt_imports
+            export = each.value.rt_exports
           }
         }
       }
@@ -88,7 +90,10 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L3" {
 
 resource "vyos_interfaces_bridge" "vxlan_bridge_L3" {
   for_each = var.vnis.l3
-  depends_on = [vyos_interfaces_vxlan.vxlan_interfaces_L3]
+  depends_on = [
+    vyos_vrf_name.create_vrfs,
+    vyos_interfaces_vxlan.vxlan_interfaces_L3
+  ]
   identifier = {bridge = "br${each.value.vni}"}
   mtu = "9169"
   vrf = each.value.vrf

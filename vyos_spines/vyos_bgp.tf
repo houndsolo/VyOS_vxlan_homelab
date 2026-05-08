@@ -96,27 +96,15 @@ resource "vyos_protocols_bgp_neighbor" "vxlan_peering" {
   peer_group = "leaf_overlay"
 }
 
-resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out_vrf_lylat_service" {
-  identifier = {
-    peer_group = "FW_L3_out"
-    name = "lylat_service"
-  }
-  capability = {
-    dynamic = true
-    extended_nexthop = true
-  }
-  remote_as = local.ext_l3_asn
-  address_family = {
-    ipv4_unicast = {
-      soft_reconfiguration = {inbound = true}
-    }
-  }
-}
 
 resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
+  depends_on = [
+    vyos_vrf_name.create_vrfs,
+  ]
+  for_each = var.vnis.l3
   identifier = {
     peer_group = "FW_L3_out"
-    name = "lylat_lan"
+    name = each.value.vrf
   }
   capability = {
     dynamic = true

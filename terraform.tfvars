@@ -63,6 +63,26 @@ dns = {
 
 vnis = {
   l2 ={
+    2 = {
+      vni         = 9002
+      vlan_id     = 2
+      vrf         = "lylat_infra"
+      anycast_gw_ip  = "10.2.0.5"
+      anycast_gw_cidr  = 16
+      anycast_mac = "0e:00:00:10:00:02"
+      advertise_default_gw = false
+      advertise_svi_ip = true
+    }
+    5 = {
+      vni         = 9005
+      vlan_id     = 5
+      vrf         = "lylat_infra"
+      anycast_gw_ip  = "10.5.0.5"
+      anycast_gw_cidr  = 16
+      anycast_mac = "0e:00:00:10:00:05"
+      advertise_default_gw = false
+      advertise_svi_ip = true
+    }
     6 = {
       vni         = 9006
       vlan_id     = 6
@@ -71,7 +91,7 @@ vnis = {
       anycast_gw_cidr  = 16
       anycast_mac = "0e:00:00:10:00:06"
       advertise_default_gw = false
-      advertise_svi_ip = false
+      advertise_svi_ip = true
     }
     8 = {
       vni         = 9008
@@ -81,7 +101,7 @@ vnis = {
       anycast_gw_cidr  = 16
       anycast_mac = "0e:00:00:10:00:08"
       advertise_default_gw = false
-      advertise_svi_ip = false
+      advertise_svi_ip = true
     }
     9 = {
       vni         = 9009
@@ -91,24 +111,32 @@ vnis = {
       anycast_gw_cidr  = 16
       anycast_mac = "0e:00:00:10:00:09"
       advertise_default_gw = false
-      advertise_svi_ip = false
+      advertise_svi_ip = true
     }
   }
   l3 = {
+    6200 = {
+      vni         = 6200
+      vrf         = "lylat_infra"
+      vrf_table   = 700
+      rt_imports  = ["700:6200 700:6600"]
+      rt_exports  = ["700:6200"]
+      ext_l3_vlan = 62
+    }
     6600 = {
       vni         = 6600
       vrf         = "lylat_service"
       vrf_table   = 1000
-      rt_imports  = "700:6600 700:6900"
-      rt_exports  = "700:6600"
+      rt_imports  = ["700:6600 700:6900"]
+      rt_exports  = ["700:6600"]
       ext_l3_vlan = 66
     }
     6900 = {
       vni         = 6900
       vrf         = "lylat_lan"
       vrf_table   = 1337
-      rt_imports  = "700:6900 700:6600 420:1337"
-      rt_exports  = "700:6900"
+      rt_imports  = ["700:6900 700:6600"]
+      rt_exports  = ["700:6900"]
       ext_l3_vlan = 69
     }
   }

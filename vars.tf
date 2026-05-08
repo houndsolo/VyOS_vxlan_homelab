@@ -68,8 +68,8 @@ variable "vnis" {
       vni      = number
       vrf         = string
       vrf_table   = number
-      rt_imports  = string
-      rt_exports  = string
+      rt_imports  = list(string)
+      rt_exports  = list(string)
       ext_l3_vlan  = number
       description = optional(string)
     }))
