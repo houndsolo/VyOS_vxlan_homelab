@@ -53,26 +53,23 @@ variable "dns" {
 
 variable "vnis" {
   type = object({
-    l2 = map(object({
-      vni         = number
-      vrf         = string
-      vlan_id     = optional(number)
-      anycast_gw_ip  = optional(string)
-      anycast_gw_cidr  = optional(string)
-      anycast_mac = optional(string)
-      description = optional(string)
-      advertise_default_gw = bool
-      advertise_svi_ip = bool
-    }))
     l3 = map(object({
-      vni      = number
-      vrf         = string
-      vrf_table   = number
-      rt_imports  = list(string)
-      rt_exports  = list(string)
-      ext_l3_vlan  = number
-      description = optional(string)
+      vni        = number
+      vrf        = string
+      vrf_table  = number
+      rt_imports = optional(list(string), [])
+      rt_exports = optional(list(string), [])
+      ext_l3_vlan = optional(number)
+
+      l2 = optional(map(object({
+        vni                  = number
+        vlan_id              = number
+        anycast_gw_ip        = string
+        anycast_gw_cidr      = number
+        anycast_mac          = string
+        advertise_default_gw = optional(bool, false)
+        advertise_svi_ip     = optional(bool, false)
+      })), {})
     }))
   })
 }
-

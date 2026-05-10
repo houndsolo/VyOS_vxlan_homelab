@@ -1,16 +1,7 @@
-#module "configure_vyos_spines" {
-#  for_each = var.fabric.spines
-#  source = "./vyos_spines"
-#  providers = { vyos = vyos.spines[each.key] }
-#  node = each.value
-#  dns = var.dns
-#  fabric= var.fabric
-#}
-
 module "configure_vyos_border_spines" {
 
   for_each = var.fabric.spines
-  source = "./vyos_spines"
+  source = "./border_spines"
   providers = { vyos = vyos.spines[each.key] }
   node = each.value
   dns = var.dns
@@ -39,7 +30,7 @@ module "configure_vyos_border_spines" {
 
 module "configure_vyos_vms" {
   for_each = var.fabric.leaves
-  source = "./vyos_vteps"
+  source = "./leaves"
   providers = { vyos = vyos.leaves[each.key] }
   node = each.value
   dns = var.dns
@@ -68,7 +59,7 @@ module "configure_vyos_vms" {
 
 module "configure_vyos_vms_greatfox" {
   for_each = var.fabric.leaves_greatfox
-  source = "./vyos_vteps"
+  source = "./leaves"
   providers = { vyos = vyos.greatfox }
   node = each.value
   dns = var.dns
@@ -122,5 +113,14 @@ module "configure_vyos_vms_greatfox" {
 #  vxlan_neighbor_suppress = local.vxlan_neighbor_suppress
 #  vxlan_nolearning = local.vxlan_nolearning
 #  vxlan_vni_filter = local.vxlan_vni_filter
+#}
+
+#module "configure_vyos_spines" {
+#  for_each = var.fabric.spines
+#  source = "./vyos_spines"
+#  providers = { vyos = vyos.spines[each.key] }
+#  node = each.value
+#  dns = var.dns
+#  fabric= var.fabric
 #}
 
