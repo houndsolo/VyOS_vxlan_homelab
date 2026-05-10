@@ -62,54 +62,99 @@ dns = {
 }
 
 vnis = {
-  l2 ={
-    6 = {
-      vni         = 9006
-      vlan_id     = 6
-      vrf         = "lylat_service"
-      anycast_gw_ip  = "10.6.0.5"
-      anycast_gw_cidr  = 16
-      anycast_mac = "0e:00:00:10:00:06"
-      advertise_default_gw = false
-      advertise_svi_ip = false
-    }
-    8 = {
-      vni         = 9008
-      vlan_id     = 8
-      vrf         = "lylat_lan"
-      anycast_gw_ip  = "10.8.0.5"
-      anycast_gw_cidr  = 16
-      anycast_mac = "0e:00:00:10:00:08"
-      advertise_default_gw = false
-      advertise_svi_ip = false
-    }
-    9 = {
-      vni         = 9009
-      vlan_id     = 9
-      vrf         = "lylat_lan"
-      anycast_gw_ip  = "10.9.0.5"
-      anycast_gw_cidr  = 16
-      anycast_mac = "0e:00:00:10:00:09"
-      advertise_default_gw = false
-      advertise_svi_ip = false
-    }
-  }
   l3 = {
+    6200 = {
+      vni         = 6200
+      vrf         = "lylat_infra"
+      vrf_table   = 700
+      rt_imports  = [
+        "700:6200",
+      ]
+      rt_exports  = ["700:6200"]
+      ext_l3_vlan = 62
+
+      l2 = {
+        2 = {
+          vni         = 9002
+          vlan_id     = 2
+          anycast_gw_ip  = "10.2.0.5"
+          anycast_gw_cidr  = 16
+          anycast_mac = "0e:00:00:10:00:02"
+          advertise_default_gw = false
+          advertise_svi_ip = false
+        }
+        3 = {
+          vni         = 9003
+          vlan_id     = 3
+          anycast_gw_ip  = "10.3.0.5"
+          anycast_gw_cidr  = 16
+          anycast_mac = "0e:00:00:10:00:03"
+          advertise_default_gw = false
+          advertise_svi_ip = false
+        }
+        5 = {
+          vni         = 9005
+          vlan_id     = 5
+          anycast_gw_ip  = "10.5.0.5"
+          anycast_gw_cidr  = 16
+          anycast_mac = "0e:00:00:10:00:05"
+          advertise_default_gw = false
+          advertise_svi_ip = false
+        }
+      }
+    }
     6600 = {
       vni         = 6600
       vrf         = "lylat_service"
       vrf_table   = 1000
-      rt_imports  = "700:6600 700:6900"
-      rt_exports  = "700:6600"
+      rt_imports  = [
+        "700:6600",
+      ]
+      rt_exports  = ["700:6600"]
       ext_l3_vlan = 66
+
+      l2 = {
+        6 = {
+          vni         = 9006
+          vlan_id     = 6
+          anycast_gw_ip  = "10.6.0.5"
+          anycast_gw_cidr  = 16
+          anycast_mac = "0e:00:00:10:00:06"
+          advertise_default_gw = false
+          advertise_svi_ip = false
+        }
+      }
     }
     6900 = {
       vni         = 6900
       vrf         = "lylat_lan"
       vrf_table   = 1337
-      rt_imports  = "700:6900 700:6600 420:1337"
-      rt_exports  = "700:6900"
+      rt_imports  = [
+        "700:6900",
+      ]
+      rt_exports  = ["700:6900"]
       ext_l3_vlan = 69
+
+      l2 = {
+        8 = {
+          vni         = 9008
+          vlan_id     = 8
+          anycast_gw_ip  = "10.8.0.5"
+          anycast_gw_cidr  = 16
+          anycast_mac = "0e:00:00:10:00:08"
+          advertise_default_gw = false
+          advertise_svi_ip = false
+        }
+        9 = {
+          vni         = 9009
+          vlan_id     = 9
+          anycast_gw_ip  = "10.9.0.5"
+          anycast_gw_cidr  = 16
+          anycast_mac = "0e:00:00:10:00:09"
+          advertise_default_gw = false
+          advertise_svi_ip = false
+        }
+      }
     }
   }
 }

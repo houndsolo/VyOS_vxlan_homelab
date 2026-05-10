@@ -1,6 +1,8 @@
 locals {
+  l2_svd = 9000
+  ext_l3_asn = 420
   underlay_local_as = 700 + var.node.id
-  hostname = "LEAF-${var.node.id}"
+  hostname = "SPINE-${var.node.id}"
 
   vxlan_loopback = "${local.vxlan_loopback_net}/32"
   vxlan_loopback_net = "10.255.240.${var.node.id}"
@@ -14,6 +16,23 @@ locals {
     })
     if leaf.id != var.node.id
   }
+  l2_vnis = merge([
+    for l3_key, l3 in var.vnis.l3 : {
+      for l2_key, l2 in try(l3.l2, {}) :
+      tostring(l2.vni) => merge(l2, {
+        l3_key     = l3_key
+        l2_key     = l2_key
+
+        l3_vni     = l3.vni
+
+        vrf        = l3.vrf
+        vrf_table  = l3.vrf_table
+
+        bridge     = "br${local.l2_svd}"
+        bridge_vif = l2.vlan_id
+      })
+    }
+  ]...)
 }
 
 variable "dns" {

@@ -1,8 +1,3 @@
-resource "vyos_system_ip_multipath" "set_multipath" {
-  ignore_unreachable_nexthops = true
-  layer4_hashing = true
-}
-
 resource "vyos_interfaces_dummy" "dummy_interface" {
   identifier = {dummy = local.vxlan_source_interface}
   address = [
@@ -11,8 +6,33 @@ resource "vyos_interfaces_dummy" "dummy_interface" {
   mtu = "9169"
 }
 
+resource "vyos_interfaces_ethernet" "set_eth1_mtu" {
+  identifier = { ethernet = "eth1" }
+  description = "switch-1 connectivity"
+  mtu = "9169"
+  lifecycle {
+    ignore_changes = [
+      hw_id,
+      offload
+    ]
+  }
+}
+
+resource "vyos_interfaces_ethernet" "set_eth2_mtu" {
+  identifier = { ethernet = "eth2" }
+  description = "switch-2 connectivity"
+  mtu = "9169"
+  lifecycle {
+    ignore_changes = [
+      hw_id,
+      offload
+    ]
+  }
+}
+
 
 resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
+  depends_on = [vyos_interfaces_ethernet.set_eth1_mtu]
   for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
 
   identifier = {
@@ -25,7 +45,8 @@ resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
 
 }
 
-resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
+resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch2" {
+  depends_on = [vyos_interfaces_ethernet.set_eth2_mtu]
   for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
 
   identifier = {
@@ -39,35 +60,14 @@ resource "vyos_interfaces_ethernet_vif" "link_to_spines_vifs_switch2" {
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth1" {
+depends_on = [vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1]
   for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
   identifier = { interface = "eth1.${1000+100*var.node.id+each.value.id}" }
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth2" {
+depends_on = [vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2]
   for_each = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
   identifier = { interface = "eth2.${2000+100*var.node.id+each.value.id}" }
 }
 
-resource "vyos_interfaces_ethernet" "set_eth3_mtu" {
-  identifier = { ethernet = "eth3" }
-  description = "FW-WAN connectivity"
-  mtu = "9169"
-  lifecycle {
-    ignore_changes = [
-      hw_id,
-      offload
-    ]
-  }
-}
-
-resource "vyos_interfaces_ethernet_vif" "set_eth3_vif_mtu" {
-  depends_on = [resource.vyos_interfaces_ethernet.set_eth3_mtu]
-  for_each = var.vnis.l3
-  description = "${each.value.vrf} L3 external connectivity"
-  identifier = {
-    ethernet = "eth3"
-    vif = each.value.ext_l3_vlan
-  }
-  vrf = each.value.vrf
-  mtu = "9169"
-}
