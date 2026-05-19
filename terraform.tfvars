@@ -67,7 +67,7 @@ vnis = {
       vni         = 6200
       vrf         = "lylat_infra"
       vrf_table   = 700
-      ipv4_rt_imports  = "700:6900"
+      #ipv4_rt_imports  = "700:6900"
       ipv4_rt_exports  = "700:6200"
       evpn_rt_imports  = [
         "700:6200",
