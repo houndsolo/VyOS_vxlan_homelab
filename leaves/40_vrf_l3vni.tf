@@ -20,22 +20,26 @@ resource "vyos_vrf_name" "create_vrfs" {
       }
 
       address_family = {
-        ipv4_unicast = {
-          export = { vpn = true }
-          import = { vpn = true }
-          #redistribute = each.value.redistribute_ipv4
-          rd =  {
-            vpn = {
-              export = "${local.vxlan_loopback_net}:${each.value.vni}"
+        ipv4_unicast = merge(
+          {
+            export = { vpn = true }
+            import = { vpn = true }
+            rd =  {
+              vpn = {
+                export = "${local.vxlan_loopback_net}:${each.value.vni}"
+              }
             }
-          }
-          route_target = {
-            vpn =   {
-              import = each.value.ipv4_rt_imports
-              export = each.value.ipv4_rt_exports
+            route_target = {
+              vpn =   {
+                import = each.value.ipv4_rt_imports
+                export = each.value.ipv4_rt_exports
+              }
             }
-          }
-        }
+          },
+          each.value.redistribute_ipv4 != null ? {
+            redistribute = each.value.redistribute_ipv4
+          } : {}
+        )
         l2vpn_evpn = {
           rd = "${local.vxlan_loopback_net}:${each.value.vni}"
           route_target = {

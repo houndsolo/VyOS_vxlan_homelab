@@ -62,7 +62,10 @@ variable "vnis" {
       evpn_rt_imports = optional(list(string), [])
       evpn_rt_exports = optional(list(string), [])
       ext_l3_vlan = optional(number)
-
+      redistribute_ipv4 = optional(object({
+        connected = optional(object({}), null)
+        static    = optional(object({}), null)
+      }))
       l2 = optional(map(object({
         vni                  = number
         vlan_id              = number
@@ -71,6 +74,7 @@ variable "vnis" {
         anycast_mac          = string
         advertise_default_gw = optional(bool, false)
         advertise_svi_ip     = optional(bool, false)
+        export_ipv4_unicast  = optional(bool, false)
       })), {})
     }))
   })

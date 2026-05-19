@@ -144,7 +144,7 @@ vnis = {
       redistribute_ipv4 = {
         connected = {}
       }
-      ipv4_rt_imports  = "700:6200"
+      #ipv4_rt_imports  = "700:6200"
       ipv4_rt_exports  = "700:6900"
       evpn_rt_imports  = [
         "700:6900",
