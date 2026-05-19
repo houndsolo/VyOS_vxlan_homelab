@@ -67,7 +67,7 @@ vnis = {
       vni         = 6200
       vrf         = "lylat_infra"
       vrf_table   = 700
-      #ipv4_rt_imports  = "700:6900"
+      ipv4_rt_imports  = "700:6900"
       ipv4_rt_exports  = "700:6200"
       evpn_rt_imports  = [
         "700:6200",
@@ -76,6 +76,9 @@ vnis = {
         "700:6200",
       ]
       ext_l3_vlan = 62
+      redistribute_ipv4 = {
+        connected = {}
+      }
 
       l2 = {
         2 = {
@@ -115,7 +118,10 @@ vnis = {
       vrf         = "lylat_service"
       vrf_table   = 1000
       #ipv4_rt_imports  = "700:6600"
-      #ipv4_rt_exports  = "700:6600"
+      ipv4_rt_exports  = "700:6600"
+      redistribute_ipv4 = {
+        connected = {}
+      }
       evpn_rt_imports  = [
         "700:6600",
       ]
@@ -144,7 +150,7 @@ vnis = {
       redistribute_ipv4 = {
         connected = {}
       }
-      #ipv4_rt_imports  = "700:6200"
+      ipv4_rt_imports  = "700:6200"
       ipv4_rt_exports  = "700:6900"
       evpn_rt_imports  = [
         "700:6900",
