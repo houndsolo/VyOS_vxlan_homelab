@@ -67,10 +67,14 @@ vnis = {
       vni         = 6200
       vrf         = "lylat_infra"
       vrf_table   = 700
-      rt_imports  = [
+      ipv4_rt_imports  = "700:6900"
+      ipv4_rt_exports  = "700:6200"
+      evpn_rt_imports  = [
         "700:6200",
       ]
-      rt_exports  = ["700:6200"]
+      evpn_rt_exports  = [
+        "700:6200",
+      ]
       ext_l3_vlan = 62
 
       l2 = {
@@ -82,6 +86,7 @@ vnis = {
           anycast_mac = "0e:00:00:10:00:02"
           advertise_default_gw = false
           advertise_svi_ip = false
+          export_ipv4_unicast = true
         }
         3 = {
           vni         = 9003
@@ -91,6 +96,7 @@ vnis = {
           anycast_mac = "0e:00:00:10:00:03"
           advertise_default_gw = false
           advertise_svi_ip = false
+          export_ipv4_unicast = false
         }
         5 = {
           vni         = 9005
@@ -100,6 +106,7 @@ vnis = {
           anycast_mac = "0e:00:00:10:00:05"
           advertise_default_gw = false
           advertise_svi_ip = false
+          export_ipv4_unicast = true
         }
       }
     }
@@ -107,10 +114,14 @@ vnis = {
       vni         = 6600
       vrf         = "lylat_service"
       vrf_table   = 1000
-      rt_imports  = [
+      #ipv4_rt_imports  = "700:6600"
+      #ipv4_rt_exports  = "700:6600"
+      evpn_rt_imports  = [
         "700:6600",
       ]
-      rt_exports  = ["700:6600"]
+      evpn_rt_exports  = [
+        "700:6600",
+      ]
       ext_l3_vlan = 66
 
       l2 = {
@@ -122,6 +133,7 @@ vnis = {
           anycast_mac = "0e:00:00:10:00:06"
           advertise_default_gw = false
           advertise_svi_ip = false
+          export_ipv4_unicast = true
         }
       }
     }
@@ -129,10 +141,17 @@ vnis = {
       vni         = 6900
       vrf         = "lylat_lan"
       vrf_table   = 1337
-      rt_imports  = [
+      redistribute_ipv4 = {
+        connected = {}
+      }
+      ipv4_rt_imports  = "700:6200"
+      ipv4_rt_exports  = "700:6900"
+      evpn_rt_imports  = [
         "700:6900",
       ]
-      rt_exports  = ["700:6900"]
+      evpn_rt_exports  = [
+        "700:6900",
+      ]
       ext_l3_vlan = 69
 
       l2 = {
@@ -144,6 +163,7 @@ vnis = {
           anycast_mac = "0e:00:00:10:00:08"
           advertise_default_gw = false
           advertise_svi_ip = false
+          export_ipv4_unicast = true
         }
         9 = {
           vni         = 9009
@@ -153,6 +173,7 @@ vnis = {
           anycast_mac = "0e:00:00:10:00:09"
           advertise_default_gw = false
           advertise_svi_ip = false
+          export_ipv4_unicast = true
         }
       }
     }

@@ -25,8 +25,8 @@ resource "vyos_vrf_name" "create_vrfs" {
         l2vpn_evpn = {
           rd = "${local.vxlan_loopback_net}:${each.value.vni}"
           route_target = {
-            import = each.value.rt_imports
-            export = each.value.rt_exports
+            import = each.value.evpn_rt_imports
+            export = each.value.evpn_rt_exports
           }
           advertise = {
             ipv4 = { unicast = {} }

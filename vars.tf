@@ -9,7 +9,7 @@ locals {
   proxy_arp_pvlan = false
 
   vxlan_external = false
-  vxlan_neighbor_suppress = true
+  vxlan_neighbor_suppress = false
   vxlan_nolearning = true
   vxlan_vni_filter = false
 
@@ -57,8 +57,10 @@ variable "vnis" {
       vni        = number
       vrf        = string
       vrf_table  = number
-      rt_imports = optional(list(string), [])
-      rt_exports = optional(list(string), [])
+      ipv4_rt_imports = optional(string)
+      ipv4_rt_exports = optional(string)
+      evpn_rt_imports = optional(list(string), [])
+      evpn_rt_exports = optional(list(string), [])
       ext_l3_vlan = optional(number)
 
       l2 = optional(map(object({
