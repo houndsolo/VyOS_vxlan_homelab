@@ -1,7 +1,7 @@
 resource "vyos_protocols_bgp" "enable_bgp" {
   depends_on = [
     #vyos_protocols_bfd_peer.spine_bfd_peers,
-    vyos_interfaces_ethernet.link_to_vms,
+    #    vyos_interfaces_ethernet.link_to_vms,
     vyos_interfaces_dummy.dummy_interface
   ]
   system_as = local.bgp_system_as

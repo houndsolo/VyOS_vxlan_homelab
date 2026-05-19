@@ -18,18 +18,24 @@ resource "vyos_vrf_name" "create_vrfs" {
           as_path = { multipath_relax = true }
         }
       }
-
       address_family = {
+        ipv4_unicast = {
+          soft_reconfiguration = {inbound = true}
+        }
         l2vpn_evpn = {
           rd = "${local.vxlan_loopback_net}:${each.value.vni}"
           route_target = {
-            #both = ["${local.bgp_system_as}:${each.value.vni}"]
-            import = each.value.rt_imports
-            export = each.value.rt_exports
+            import = each.value.evpn_rt_imports
+            export = each.value.evpn_rt_exports
+          }
+          advertise = {
+            ipv4 = { unicast = {} }
           }
         }
       }
     }
   }
 }
+
+
 

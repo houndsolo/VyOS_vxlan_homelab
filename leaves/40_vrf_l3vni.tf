@@ -1,34 +1,36 @@
 locals {
-  l3_vnis_with_ipv4_vpn_export_policy = {
-    for l3_key, l3 in var.vnis.l3 :
-    l3_key => l3
-    if length([
-      for l2_key, l2 in l3.l2 :
-      l2_key
-      if try(l2.export_ipv4_unicast, false)
-    ]) > 0
-  }
-
-  ipv4_vpn_export_prefix_rules = merge([
-    for l3_key, l3 in local.l3_vnis_with_ipv4_vpn_export_policy : {
-      for l2_key, l2 in l3.l2 :
-      "${l3_key}-${l2_key}" => {
-        l3_key           = l3_key
-        l2_key           = l2_key
-        vrf              = l3.vrf
-        vlan_id          = l2.vlan_id
-        prefix           = cidrsubnet("${l2.anycast_gw_ip}/${l2.anycast_gw_cidr}", 0, 0)
-        prefix_list_name = "PL-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
-        route_map_name   = "RM-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
-        rule             = tonumber(l2.vlan_id) * 10
-      }
-      if try(l2.export_ipv4_unicast, false)
+  ipv4_vpn_export_policy = {
+    l3 = {
+      for l3_key, l3 in var.vnis.l3 :
+      l3_key => l3
+      if length([
+        for l2_key, l2 in l3.l2 :
+        l2_key
+        if try(l2.export_ipv4_unicast, false)
+      ]) > 0
     }
-  ]...)
+
+    l2 = merge([
+      for l3_key, l3 in var.vnis.l3 : {
+        for l2_key, l2 in l3.l2 :
+        "${l3_key}-${l2_key}" => {
+          l3_key           = l3_key
+          l2_key           = l2_key
+          vrf              = l3.vrf
+          vlan_id          = l2.vlan_id
+          prefix           = cidrsubnet("${l2.anycast_gw_ip}/${l2.anycast_gw_cidr}", 0, 0)
+          prefix_list_name = "PL-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
+          route_map_name   = "RM-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
+          rule             = tonumber(l2.vlan_id) * 10
+        }
+        if try(l2.export_ipv4_unicast, false)
+      }
+    ]...)
+  }
 }
 
 resource "vyos_policy_prefix_list" "create_prefix_list" {
-  for_each = local.l3_vnis_with_ipv4_vpn_export_policy
+  for_each = local.ipv4_vpn_export_policy.l3
   identifier = {
     prefix_list = "PL-${upper(replace(each.value.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
   }
@@ -36,7 +38,7 @@ resource "vyos_policy_prefix_list" "create_prefix_list" {
 
 resource "vyos_policy_prefix_list_rule" "ipv4_vpn_export_prefix_rules" {
   depends_on = [resource.vyos_policy_prefix_list.create_prefix_list]
-  for_each = local.ipv4_vpn_export_prefix_rules
+  for_each = local.ipv4_vpn_export_policy.l2
 
   identifier = {
     prefix_list = each.value.prefix_list_name
@@ -48,7 +50,7 @@ resource "vyos_policy_prefix_list_rule" "ipv4_vpn_export_prefix_rules" {
 }
 
 resource "vyos_policy_route_map" "create_route_map" {
-  for_each = local.l3_vnis_with_ipv4_vpn_export_policy
+  for_each = local.ipv4_vpn_export_policy.l3
 
   identifier = {
     route_map = "RM-${upper(replace(each.value.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
@@ -57,7 +59,7 @@ resource "vyos_policy_route_map" "create_route_map" {
 
 resource "vyos_policy_route_map_rule" "ipv4_vpn_export_permit" {
   depends_on = [resource.vyos_policy_route_map.create_route_map]
-  for_each = local.l3_vnis_with_ipv4_vpn_export_policy
+  for_each = local.ipv4_vpn_export_policy.l3
 
   identifier = {
     route_map = "RM-${upper(replace(each.value.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
@@ -75,7 +77,7 @@ resource "vyos_policy_route_map_rule" "ipv4_vpn_export_permit" {
 }
 
 resource "vyos_policy_route_map_rule" "ipv4_vpn_export_deny" {
-  for_each = local.l3_vnis_with_ipv4_vpn_export_policy
+  for_each = local.ipv4_vpn_export_policy.l3
 
   identifier = {
     route_map = "RM-${upper(replace(each.value.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
@@ -127,7 +129,7 @@ resource "vyos_vrf_name" "create_vrfs" {
           each.value.redistribute_ipv4 != null ? {
             redistribute = each.value.redistribute_ipv4
           } : {},
-          contains(keys(local.l3_vnis_with_ipv4_vpn_export_policy), each.key) ? {
+          contains(keys(local.ipv4_vpn_export_policy.l3), each.key) ? {
             route_map = {
               vpn = {
                 export = "RM-${upper(replace(each.value.vrf, "_", "-"))}-IPV4-VPN-EXPORT"

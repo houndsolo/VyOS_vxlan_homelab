@@ -38,14 +38,14 @@ fabric = {
     }
   }
   border_leaves = {
-    # border18  = {
-    #   hypervisor_node = "fichina"
-    #   id = 18
-    # }
-    # border19  = {
-    #   hypervisor_node = "eldarad"
-    #   id = 19
-    # }
+     border18  = {
+       hypervisor_node = "fichina"
+       id = 18
+     }
+     border19  = {
+       hypervisor_node = "eldarad"
+       id = 19
+     }
   }
   leaves_greatfox = {
     greatfox = {
@@ -67,7 +67,7 @@ vnis = {
       vni         = 6200
       vrf         = "lylat_infra"
       vrf_table   = 700
-      ipv4_rt_imports  = "700:6900"
+      ipv4_rt_imports  = "700:6900 700:6600"
       ipv4_rt_exports  = "700:6200"
       evpn_rt_imports  = [
         "700:6200",
@@ -117,7 +117,7 @@ vnis = {
       vni         = 6600
       vrf         = "lylat_service"
       vrf_table   = 1000
-      #ipv4_rt_imports  = "700:6600"
+      ipv4_rt_imports  = "700:6200 700:6900"
       ipv4_rt_exports  = "700:6600"
       redistribute_ipv4 = {
         connected = {}
@@ -150,7 +150,7 @@ vnis = {
       redistribute_ipv4 = {
         connected = {}
       }
-      ipv4_rt_imports  = "700:6200"
+      ipv4_rt_imports  = "700:6200 700:6600"
       ipv4_rt_exports  = "700:6900"
       evpn_rt_imports  = [
         "700:6900",
