@@ -3,6 +3,10 @@ locals {
   underlay_local_as = 700 + var.node.id
   hostname = "LEAF-${var.node.id}"
 
+  l3ext_peering_address_local = ["10.255.240.${var.node.id}/32"]
+  l3ext_peering_address_remote = "10.255.240.255"
+  ext_l3_asn = 420
+
   vxlan_loopback = "${local.vxlan_loopback_net}/32"
   vxlan_loopback_net = "10.255.240.${var.node.id}"
   bgp_system_as = 700
