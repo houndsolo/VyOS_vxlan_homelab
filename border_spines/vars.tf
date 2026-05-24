@@ -1,4 +1,6 @@
 locals {
+  mpls_v6_loopback = "fd69:420::${var.node.id}/128"
+  mpls_v6_loopback_net = "fd69:420::${var.node.id}"
   l2_svd = 9000
   ext_l3_asn = 420
   underlay_local_as = 700 + var.node.id

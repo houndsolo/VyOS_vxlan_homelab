@@ -43,4 +43,10 @@ provider "vyos" {
   }
   default_timeouts = 2
   overwrite_existing_resources_on_create = true
+  ignore_missing_parent_resource_on_create = true
+
+  # Batch all MPLS resources into one VyOS configure/commit transaction.
+  manual_binding_overrides = {
+    "protocols mpls" = "mpls"
+  }
 }

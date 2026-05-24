@@ -19,7 +19,10 @@ resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" 
 }
 
 resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
-  depends_on = [vyos_protocols_bgp.enable_bgp]
+  depends_on = [
+    vyos_protocols_bgp.enable_bgp,
+    vyos_policy_route_map.create_route_map_local_as
+  ]
   identifier = {peer_group = "spine_underlay"}
   capability = {
     #dynamic = true
@@ -29,6 +32,9 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
   address_family = {
     ipv4_unicast = {
       soft_reconfiguration = {inbound = true}
+      route_map = {
+        export = "local_as_rm"
+      }
     }
   }
 }

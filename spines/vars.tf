@@ -4,12 +4,9 @@ locals {
   mpls_v6_loopback = "fd69:420::${var.node.id}/128"
   mpls_v6_loopback_net = "fd69:420::${var.node.id}"
   l2_svd = 9000
-  underlay_local_as = 700 + var.node.id
-  hostname = "LEAF-${var.node.id}"
-
-  l3ext_peering_address_local = ["10.255.240.${var.node.id}/32"]
-  l3ext_peering_address_remote = "10.255.240.255"
   ext_l3_asn = 420
+  underlay_local_as = 700 + var.node.id
+  hostname = "SPINE-${var.node.id}"
 
   vxlan_loopback = "${local.vxlan_loopback_net}/32"
   vxlan_loopback_net = "10.255.240.${var.node.id}"
@@ -23,7 +20,6 @@ locals {
     })
     if leaf.id != var.node.id
   }
-
   l2_vnis = merge([
     for l3_key, l3 in var.vnis.l3 : {
       for l2_key, l2 in try(l3.l2, {}) :

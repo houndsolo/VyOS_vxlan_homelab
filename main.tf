@@ -1,7 +1,7 @@
 module "configure_vyos_border_spines" {
 
   for_each = var.fabric.spines
-  source = "./border_spines"
+  source = "./spines"
   providers = { vyos = vyos.spines[each.key] }
   node = each.value
   dns = var.dns
