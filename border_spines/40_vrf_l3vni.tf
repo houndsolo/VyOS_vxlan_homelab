@@ -1,6 +1,6 @@
 resource "vyos_vrf_name" "create_vrfs" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
-  for_each = var.vnis.l3
+  for_each   = var.vnis.l3
 
   identifier = { name = each.value.vrf }
 
@@ -20,7 +20,7 @@ resource "vyos_vrf_name" "create_vrfs" {
       }
       address_family = {
         ipv4_unicast = {
-          soft_reconfiguration = {inbound = true}
+          soft_reconfiguration = { inbound = true }
         }
         l2vpn_evpn = {
           rd = "${local.vxlan_loopback_net}:${each.value.vni}"

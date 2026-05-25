@@ -39,29 +39,29 @@
 
 resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1_ldp" {
   depends_on = [vyos_interfaces_ethernet.set_eth1_mtu]
-  for_each =  var.fabric.border_leaves
-  address = ["10.251.${var.node.id}${each.value.id}.0/31"]
+  for_each   = var.fabric.border_leaves
+  address    = ["10.251.${var.node.id}${each.value.id}.0/31"]
 
   identifier = {
     ethernet = "eth1"
-    vif = 1000 + 100 * var.node.id + each.value.id
+    vif      = 1000 + 100 * var.node.id + each.value.id
   }
   description = "mpls ldp ipv4 link"
-  mtu = "9169"
+  mtu         = "9169"
 
 }
 
 resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch2_ldp" {
   depends_on = [vyos_interfaces_ethernet.set_eth2_mtu]
-  for_each =  var.fabric.border_leaves
-  address = ["10.252.${var.node.id}${each.value.id}.0/31"]
+  for_each   = var.fabric.border_leaves
+  address    = ["10.252.${var.node.id}${each.value.id}.0/31"]
 
   identifier = {
     ethernet = "eth2"
-    vif = 2000 + 100 * var.node.id + each.value.id
+    vif      = 2000 + 100 * var.node.id + each.value.id
   }
   description = "mpls ldp ipv4 link"
-  mtu = "9169"
+  mtu         = "9169"
 
 }
 

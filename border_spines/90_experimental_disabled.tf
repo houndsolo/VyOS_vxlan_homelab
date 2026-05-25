@@ -10,7 +10,7 @@ resource "vyos_policy_prefix_list6_rule" "ipv6_local_pl_rule" {
 
   identifier = {
     prefix_list6 = "local_ipv6_pl"
-    rule        = 10
+    rule         = 10
   }
   action = "permit"
   prefix = local.mpls_v6_loopback
@@ -34,6 +34,6 @@ resource "vyos_policy_route_map_rule" "rm_local_ipv6_rule" {
   action = "permit"
 
   match = {
-    ipv6 = { address = { prefix_list  = "local_ipv6_pl"} }
+    ipv6 = { address = { prefix_list = "local_ipv6_pl" } }
   }
 }

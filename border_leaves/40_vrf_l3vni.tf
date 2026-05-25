@@ -38,7 +38,7 @@ resource "vyos_policy_prefix_list_rule" "ipv4_vpn_export_prefix_rules" {
 
   identifier = {
     prefix_list = local.ipv4_vpn_export_policy[each.value.l3_key].prefix_list_name
-    rule        = each.value.rule }
+  rule = each.value.rule }
 
   action = "permit"
   prefix = each.value.prefix
@@ -109,7 +109,7 @@ resource "vyos_vrf_name" "create_vrfs" {
           {
             export = { vpn = true }
             import = { vpn = true }
-            label = { vpn = { export = "auto" } }
+            label  = { vpn = { export = "auto" } }
 
             rd = {
               vpn = {
@@ -118,9 +118,13 @@ resource "vyos_vrf_name" "create_vrfs" {
             }
 
             route_target = {
-              vpn = {
+              vpn = (
+                each.value.ipv4_rt_imports != null && each.value.ipv4_rt_exports != null
+                ) ? {
                 import = each.value.ipv4_rt_imports
                 export = each.value.ipv4_rt_exports
+                } : {
+                both = each.value.ipv4_rt_both
               }
             }
 
@@ -138,17 +142,23 @@ resource "vyos_vrf_name" "create_vrfs" {
           } : {}
         )
 
-        l2vpn_evpn = {
-          rd = "${local.vxlan_loopback_net}:${each.value.vni}"
-          advertise = {
-            ipv4 = { unicast = {} }
-          }
+        l2vpn_evpn = merge(
+          {
+            rd = "${local.vxlan_loopback_net}:${each.value.vni}"
 
-          route_target = {
-            import = each.value.evpn_rt_imports
-            export = each.value.evpn_rt_exports
-          }
-        }
+            route_target = {
+              import = each.value.evpn_rt_imports
+              export = each.value.evpn_rt_exports
+            }
+          },
+          each.value.export_vpn_ipv4 ? {
+            advertise = {
+              ipv4 = {
+                unicast = {}
+              }
+            }
+          } : {}
+        )
       }
     }
   }

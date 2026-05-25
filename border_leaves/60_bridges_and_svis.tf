@@ -4,26 +4,26 @@ resource "vyos_interfaces_bridge" "vxlan_bridge_L2" {
     vyos_vrf_name.create_vrfs,
     vyos_interfaces_vxlan.vxlan_interfaces_L3
   ]
-  identifier = {bridge = "br${each.value.vni}"}
+  identifier = { bridge = "br${each.value.vni}" }
   ip = {
     enable_arp_accept = true
   }
   mtu = "9169"
-    address = [
-      "${each.value.anycast_gw_ip}/${each.value.anycast_gw_cidr}"
-    ]
-    mac = each.value.anycast_mac
+  address = [
+    "${each.value.anycast_gw_ip}/${each.value.anycast_gw_cidr}"
+  ]
+  mac = each.value.anycast_mac
   vrf = each.value.vrf
 }
 
 
 
 resource "vyos_interfaces_bridge" "vxlan_bridge_L3" {
-  for_each = var.vnis.l3
+  for_each   = var.vnis.l3
   depends_on = [vyos_interfaces_vxlan.vxlan_interfaces_L3]
-  identifier = {bridge = "br${each.value.vni}"}
-  mtu = "9169"
-  vrf = each.value.vrf
+  identifier = { bridge = "br${each.value.vni}" }
+  mtu        = "9169"
+  vrf        = each.value.vrf
 }
 
 resource "vyos_interfaces_bridge_member_interface" "brN_vxlanN_l2" {
@@ -33,7 +33,7 @@ resource "vyos_interfaces_bridge_member_interface" "brN_vxlanN_l2" {
   ]
   for_each = local.l2_vnis
   identifier = {
-    bridge = "br${each.value.vni}"
+    bridge    = "br${each.value.vni}"
     interface = "vxlan${each.value.vni}"
   }
 }
@@ -45,7 +45,7 @@ resource "vyos_interfaces_bridge_member_interface" "brN_vxlanN_l3" {
   ]
   for_each = var.vnis.l3
   identifier = {
-    bridge = "br${each.value.vni}"
+    bridge    = "br${each.value.vni}"
     interface = "vxlan${each.value.vni}"
   }
 }

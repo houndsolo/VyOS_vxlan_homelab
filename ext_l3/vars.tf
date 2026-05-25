@@ -1,19 +1,19 @@
 locals {
-  l2_svd = 9000
+  l2_svd            = 9000
   underlay_local_as = 700 + var.node.id
-  hostname = "LEAF-${var.node.id}"
+  hostname          = "LEAF-${var.node.id}"
 
-  l3ext_peering_address_local = ["10.255.240.${var.node.id}/32"]
+  l3ext_peering_address_local  = ["10.255.240.${var.node.id}/32"]
   l3ext_peering_address_remote = "10.255.240.255"
-  ext_l3_asn = 420
+  ext_l3_asn                   = 420
 
-  vxlan_loopback = "${local.vxlan_loopback_net}/32"
-  vxlan_loopback_net = "10.255.240.${var.node.id}"
-  bgp_system_as = 700
+  vxlan_loopback         = "${local.vxlan_loopback_net}/32"
+  vxlan_loopback_net     = "10.255.240.${var.node.id}"
+  bgp_system_as          = 700
   vxlan_source_interface = "dum240"
 
   vxlan_peers = {
-    for leaf_name, leaf in var.fabric.leaves:
+    for leaf_name, leaf in var.fabric.leaves :
     leaf_name => merge(leaf, {
       vxlan_loopback = "10.255.240.${leaf.id}"
     })
@@ -24,13 +24,13 @@ locals {
     for l3_key, l3 in var.vnis.l3 : {
       for l2_key, l2 in try(l3.l2, {}) :
       tostring(l2.vni) => merge(l2, {
-        l3_key     = l3_key
-        l2_key     = l2_key
+        l3_key = l3_key
+        l2_key = l2_key
 
-        l3_vni     = l3.vni
+        l3_vni = l3.vni
 
-        vrf        = l3.vrf
-        vrf_table  = l3.vrf_table
+        vrf       = l3.vrf
+        vrf_table = l3.vrf_table
 
         bridge     = "br${local.l2_svd}"
         bridge_vif = l2.vlan_id

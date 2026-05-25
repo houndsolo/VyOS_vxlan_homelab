@@ -9,11 +9,11 @@ resource "vyos_policy_as_path_list_rule" "as_path_local_rule" {
 
   identifier = {
     as_path_list = "local_as_export"
-    rule        = 10
+    rule         = 10
   }
 
   action = "permit"
-  regex = "^$"
+  regex  = "^$"
 }
 
 #resource "vyos_policy_as_path_list_rule" "as_path_local_rule_2" {

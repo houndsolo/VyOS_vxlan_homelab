@@ -1,41 +1,44 @@
 locals {
-  vxlan_mtu = 9119
-  disable_forwarding = false
-  disable_arp_filter = false
-  enable_arp_accept = false
-  enable_arp_announce = false
-  enable_directed_broadcast = false
-  enable_proxy_arp = false
-  proxy_arp_pvlan = false
+  bgp_l2vpn = {
+    her              = true
+    flooding_disable = false
+    advertise_svi    = false
+    advertise_vni    = true
+    rt_auto_derive   = false
+  }
 
-  vxlan_external = false
-  vxlan_neighbor_suppress = false
-  vxlan_nolearning = true
-  vxlan_vni_filter = false
-
-  rt_auto_derive = false
-  bgp_l2vpn_flooding_disable = false
-  bgp_l2vpn_her = true
-  bgp_l2vpn_advertise_svi = false
-  bgp_l2vpn_advertise_vni = true
+  vxlan = {
+    mtu                       = 9119
+    disable_forwarding        = false
+    disable_arp_filter        = false
+    enable_arp_accept         = false
+    enable_arp_announce       = false
+    enable_directed_broadcast = false
+    enable_proxy_arp          = false
+    proxy_arp_pvlan           = false
+    external                  = false
+    neighbor_suppress         = false
+    nolearning                = true
+    vni_filter                = false
+  }
 }
 
 variable "fabric" {
   type = object({
     spines = map(object({
-      id  = number
+      id = number
     }))
 
     leaves = map(object({
-      id  = number
+      id              = number
       hypervisor_node = string
     }))
     border_leaves = map(object({
-      id  = number
+      id              = number
       hypervisor_node = string
     }))
     leaves_greatfox = map(object({
-      id  = number
+      id              = number
       hypervisor_node = string
     }))
   })
@@ -44,8 +47,8 @@ variable "fabric" {
 variable "dns" {
   description = "DNS configuration"
   type = object({
-    name_servers = list(string)
-    domain_name = string
+    name_servers  = list(string)
+    domain_name   = string
     domain_search = list(string)
   })
 }
@@ -54,15 +57,16 @@ variable "dns" {
 variable "vnis" {
   type = object({
     l3 = map(object({
-      vni        = number
-      vrf        = string
-      vrf_table  = number
-      ipv4_rt_imports = optional(string)
-      ipv4_rt_exports = optional(string)
-      ipv4_rt_both    = optional(string)
+      vni             = number
+      vrf             = string
+      vrf_table       = number
+      ipv4_rt_imports = optional(string, null)
+      ipv4_rt_exports = optional(string, null)
+      ipv4_rt_both    = optional(string, null)
       evpn_rt_imports = optional(list(string), [])
       evpn_rt_exports = optional(list(string), [])
-      ext_l3_vlan = optional(number)
+      ext_l3_vlan     = optional(number)
+      export_vpn_ipv4 = optional(bool, false)
       redistribute_ipv4 = optional(object({
         connected = optional(object({}), null)
         static    = optional(object({}), null)
