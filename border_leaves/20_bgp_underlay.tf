@@ -21,7 +21,6 @@ resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" 
 resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
   depends_on = [
     vyos_protocols_bgp.enable_bgp,
-    vyos_policy_route_map.create_route_map_local_as
   ]
   identifier = {peer_group = "spine_underlay"}
   capability = {
@@ -30,12 +29,6 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
   }
   remote_as = "external"
   address_family = {
-    ipv6_unicast = {
-      soft_reconfiguration = {inbound = true}
-      route_map = {
-        export = "local_ipv6_rm"
-      }
-    }
     ipv4_unicast = {
       soft_reconfiguration = {inbound = true}
       route_map = {
@@ -47,41 +40,10 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
 
 resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as" {
   depends_on = [
-    vyos_policy_route_map.create_route_map_mpls_ipv4
 ]
   identifier = {
     local_as = local.underlay_local_as
     peer_group = "spine_underlay"
-  }
-  no_prepend = { replace_as = true }
-}
-
-resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay_mpls" {
-  depends_on = [
-    vyos_protocols_bgp.enable_bgp,
-    vyos_policy_route_map.create_route_map_local_as
-  ]
-  identifier = {peer_group = "spine_underlay_mpls"}
-  capability = {
-    dynamic = true
-    extended_nexthop = true
-  }
-  remote_as = "external"
-  address_family = {
-    ipv4_unicast = {
-      soft_reconfiguration = {inbound = true}
-      route_map = {
-        export = "mpls_ipv4_export_rm"
-      }
-    }
-  }
-}
-
-resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_mpls_local_as" {
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = {
-    local_as = local.underlay_local_as
-    peer_group = "spine_underlay_mpls"
   }
   no_prepend = { replace_as = true }
 }
@@ -112,9 +74,3 @@ resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_
   depends_on = [vyos_protocols_bgp.enable_bgp]
   identifier = { network = local.vxlan_loopback }
 }
-
-resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback_mpls" {
-  depends_on = [vyos_protocols_bgp.enable_bgp]
-  identifier = { network = local.mpls_loopback }
-}
-

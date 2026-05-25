@@ -38,8 +38,7 @@ resource "vyos_policy_prefix_list_rule" "ipv4_vpn_export_prefix_rules" {
 
   identifier = {
     prefix_list = local.ipv4_vpn_export_policy[each.value.l3_key].prefix_list_name
-    rule        = each.value.rule
-  }
+    rule        = each.value.rule }
 
   action = "permit"
   prefix = each.value.prefix
@@ -110,6 +109,7 @@ resource "vyos_vrf_name" "create_vrfs" {
           {
             export = { vpn = true }
             import = { vpn = true }
+            label = { vpn = { export = "auto" } }
 
             rd = {
               vpn = {
@@ -140,6 +140,9 @@ resource "vyos_vrf_name" "create_vrfs" {
 
         l2vpn_evpn = {
           rd = "${local.vxlan_loopback_net}:${each.value.vni}"
+          advertise = {
+            ipv4 = { unicast = {} }
+          }
 
           route_target = {
             import = each.value.evpn_rt_imports

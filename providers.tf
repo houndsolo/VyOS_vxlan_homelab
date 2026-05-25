@@ -6,7 +6,7 @@ provider "vyos" {
   certificate = {
     disable_verify = true
   }
-  default_timeouts = 2
+  default_timeouts = 1
   overwrite_existing_resources_on_create = true
 }
 
@@ -18,7 +18,7 @@ provider "vyos" {
   certificate = {
     disable_verify = true
   }
-  default_timeouts = 2
+  default_timeouts = 1
   overwrite_existing_resources_on_create = true
 }
 
@@ -29,7 +29,7 @@ provider "vyos" {
   certificate = {
     disable_verify = true
   }
-  default_timeouts = 2
+  default_timeouts = 1
   overwrite_existing_resources_on_create = true
 }
 
@@ -41,7 +41,7 @@ provider "vyos" {
   certificate = {
     disable_verify = true
   }
-  default_timeouts = 2
+  default_timeouts = 1
   overwrite_existing_resources_on_create = true
   ignore_missing_parent_resource_on_create = true
 

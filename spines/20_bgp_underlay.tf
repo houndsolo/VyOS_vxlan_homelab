@@ -28,32 +28,6 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_leaf_underlay" {
   }
 }
 
-resource "vyos_protocols_bgp_peer_group" "peer_group_border_leaf_underlay_mpls" {
-  depends_on = [
-    vyos_protocols_bgp.enable_bgp,
-    vyos_policy_route_map.create_route_map_local_ipv6,
-    vyos_policy_route_map.create_route_map_block_fw_wan,
-    vyos_policy_route_map.create_route_map_mpls_ipv4
-  ]
-  identifier = {peer_group = "border_leaf_underlay_mpls"}
-  capability = {
-    dynamic = true
-    extended_nexthop = true
-  }
-  remote_as = "external"
-  address_family = {
-    #ipv6_unicast = {
-    #  soft_reconfiguration = {inbound = true}
-    #}
-    ipv4_unicast = {
-      soft_reconfiguration = {inbound = true}
-      route_map = {
-        export = "mpls_ipv4_export_rm"
-      }
-    }
-  }
-}
-
 resource "vyos_protocols_bgp_address_family_ipv4_unicast_redistribute_connected" "redistribute_connected" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
 }
@@ -61,8 +35,6 @@ resource "vyos_protocols_bgp_address_family_ipv4_unicast_redistribute_connected"
 resource "vyos_protocols_bgp_peer_group" "peer_group_border_leaf_underlay" {
   depends_on = [
     vyos_protocols_bgp.enable_bgp,
-    vyos_policy_route_map.create_route_map_local_ipv6,
-    vyos_policy_route_map.create_route_map_block_fw_wan
   ]
   identifier = {peer_group = "border_leaf_underlay"}
   capability = {
@@ -71,14 +43,8 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_border_leaf_underlay" {
   }
   remote_as = "external"
   address_family = {
-    #ipv6_unicast = {
-    #  soft_reconfiguration = {inbound = true}
-    #}
     ipv4_unicast = {
       soft_reconfiguration = {inbound = true}
-      route_map = {
-        export = "ipv4_block_fw_WAN_rm"
-      }
     }
   }
 }
@@ -98,15 +64,6 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_border_underlay_lo
   identifier = {
     local_as = local.underlay_local_as
     peer_group = "border_leaf_underlay"
-  }
-  no_prepend = { replace_as = true }
-}
-
-resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_border_underlay_mpls_local_as" {
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_overlay]
-  identifier = {
-    local_as = local.underlay_local_as
-    peer_group = "border_leaf_underlay_mpls"
   }
   no_prepend = { replace_as = true }
 }
@@ -133,35 +90,9 @@ resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw2" {
   }
 }
 
-resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1_border" {
-  for_each = var.fabric.border_leaves
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_border_leaf_underlay]
-  identifier = { neighbor = "eth1.${1000+100*var.node.id+each.value.id}" }
-  interface = {
-    v6only = {
-      peer_group = "border_leaf_underlay"
-    }
-  }
-}
-
-resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw2_border" {
-  for_each = var.fabric.border_leaves
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_border_leaf_underlay]
-  identifier = { neighbor = "eth2.${2000+100*var.node.id+each.value.id}" }
-  interface = {
-    v6only = {
-      peer_group = "border_leaf_underlay"
-    }
-  }
-}
-
 
 resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
   identifier = { network = local.vxlan_loopback }
 }
 
-resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback_mpls" {
-  depends_on = [vyos_protocols_bgp.enable_bgp]
-  identifier = { network = local.mpls_loopback }
-}
