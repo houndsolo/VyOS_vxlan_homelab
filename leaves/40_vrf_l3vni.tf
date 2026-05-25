@@ -119,9 +119,8 @@ resource "vyos_vrf_name" "create_vrfs" {
 
             route_target = {
               vpn = {
-                both = each.value.ipv4_rt_both
-                #import = each.value.ipv4_rt_imports
-                #export = each.value.ipv4_rt_exports
+                import = each.value.ipv4_rt_imports
+                export = each.value.ipv4_rt_exports
               }
             }
 

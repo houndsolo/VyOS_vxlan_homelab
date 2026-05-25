@@ -17,7 +17,7 @@ locals {
     enable_proxy_arp          = false
     proxy_arp_pvlan           = false
     external                  = false
-    neighbor_suppress         = false
+    neighbor_suppress         = true
     nolearning                = true
     vni_filter                = false
   }
@@ -62,7 +62,8 @@ variable "vnis" {
       vrf_table       = number
       ipv4_rt_imports = optional(string, null)
       ipv4_rt_exports = optional(string, null)
-      ipv4_rt_both    = optional(string, null)
+      BL_ipv4_rt_imports = optional(string, null)
+      BL_ipv4_rt_exports = optional(string, null)
       evpn_rt_imports = optional(list(string), [])
       evpn_rt_exports = optional(list(string), [])
       ext_l3_vlan     = optional(number)
