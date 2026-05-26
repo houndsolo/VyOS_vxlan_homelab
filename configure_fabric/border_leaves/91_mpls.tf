@@ -41,10 +41,18 @@ resource "vyos_interfaces_dummy" "dummy_interface_mpls" {
 }
 
 resource "vyos_protocols_mpls" "mpls_interfaces" {
+  depends_on = [
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1,
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2
+  ]
   interface = local.mpls_interfaces
 }
 
 resource "vyos_protocols_mpls_ldp_interface" "ldp_router_interfaces" {
+  depends_on = [
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1,
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2
+  ]
   for_each   = toset(local.mpls_interfaces)
   identifier = { interface = each.value }
 }
@@ -63,6 +71,7 @@ resource "vyos_protocols_ospf" "enable_ospf" {
 }
 
 resource "vyos_protocols_ospf_interface" "enable_ospf" {
+  depends_on = [vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2]
   for_each   = toset(local.ospf_interfaces)
   identifier = { interface = each.value }
   passive    = { disable = true }
@@ -71,6 +80,7 @@ resource "vyos_protocols_ospf_interface" "enable_ospf" {
 }
 
 resource "vyos_protocols_ospf_interface" "enable_ospf_non_broadcast" {
+  depends_on = [vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1]
   for_each   = var.fabric.spines
   identifier = { interface = "eth1.${1000 + 100 * each.value.id + var.node.id}" }
   passive    = { disable = true }
