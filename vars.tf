@@ -1,28 +1,3 @@
-locals {
-  bgp_l2vpn = {
-    her              = true
-    flooding_disable = false
-    advertise_svi    = false
-    advertise_vni    = true
-    rt_auto_derive   = false
-  }
-
-  vxlan = {
-    mtu                       = 9119
-    disable_forwarding        = false
-    disable_arp_filter        = false
-    enable_arp_accept         = false
-    enable_arp_announce       = false
-    enable_directed_broadcast = false
-    enable_proxy_arp          = false
-    proxy_arp_pvlan           = false
-    external                  = false
-    neighbor_suppress         = false
-    nolearning                = true
-    vni_filter                = false
-  }
-}
-
 variable "fabric" {
   type = object({
     spines = map(object({
@@ -30,20 +5,28 @@ variable "fabric" {
     }))
 
     leaves = map(object({
-      id              = number
-      hypervisor_node = string
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
     }))
     fabric_ext_leaves = map(object({
-      id              = number
-      hypervisor_node = string
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
     }))
     border_leaves = map(object({
-      id              = number
-      hypervisor_node = string
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
     }))
     leaves_greatfox = map(object({
-      id              = number
-      hypervisor_node = string
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
     }))
   })
 }
@@ -56,7 +39,6 @@ variable "dns" {
     domain_search = list(string)
   })
 }
-
 
 variable "vnis" {
   type = object({
@@ -88,9 +70,4 @@ variable "vnis" {
       })), {})
     }))
   })
-}
-
-variable "vyos_key" {
-  type      = string
-  sensitive = true
 }

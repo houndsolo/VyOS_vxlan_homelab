@@ -1,4 +1,5 @@
 debug.log
-passwords.tf
+vyos_passwords.tf
+proxmox_passwords.tf
 terraform.tfstate*
 .terraform*

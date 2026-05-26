@@ -30,3 +30,13 @@ variable "fabric" {
     }))
   })
 }
+
+variable "pve_api_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "gf_api_token" {
+  type      = string
+  sensitive = true
+}

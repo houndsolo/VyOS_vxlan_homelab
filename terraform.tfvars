@@ -16,11 +16,11 @@ fabric = {
 
   fabric_ext_leaves = {
     fabric15 = {
-      hypervisor_node = "macbeth", id = 15, is_vm = true
+      hypervisor_node  = "macbeth", id = 15, is_vm = true
       underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr1"]
     }
     fabric16 = {
-      hypervisor_node = "fortuna", id = 16, is_vm = true
+      hypervisor_node  = "fortuna", id = 16, is_vm = true
       underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr1"]
     }
   }
@@ -95,9 +95,9 @@ vnis = {
       }
     }
     6600 = {
-      vni             = 6600
-      vrf             = "lylat_service"
-      vrf_table       = 1000
+      vni       = 6600
+      vrf       = "lylat_service"
+      vrf_table = 1000
 
       ipv4_rt_imports = "700:6200"
       ipv4_rt_exports = "700:6600"
