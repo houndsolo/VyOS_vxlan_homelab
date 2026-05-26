@@ -1,7 +1,8 @@
 locals {
   vm_leaves = merge(
     { for name, leaf in var.fabric.leaves : name => merge(leaf, { hostname = "vtep-${name}" }) if leaf.is_vm },
-    { for name, leaf in var.fabric.border_leaves : name => merge(leaf, { hostname = "vtep-border-${leaf.id}" }) if leaf.is_vm }
+    { for name, leaf in var.fabric.border_leaves : name => merge(leaf, { hostname = "vtep-border-${leaf.id}" }) if leaf.is_vm },
+    { for name, leaf in var.fabric.fabric_ext_leaves : name => merge(leaf, { hostname = "vtep-fabric-ext-${leaf.id}" }) if leaf.is_vm },
   )
 
   vm_leaves_greatfox = {
