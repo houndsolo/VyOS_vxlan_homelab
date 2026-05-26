@@ -1,0 +1,4 @@
+debug.log
+passwords.tf
+terraform.tfstate*
+.terraform*
