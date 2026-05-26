@@ -15,8 +15,14 @@ fabric = {
   }
 
   fabric_ext_leaves = {
-    fabric15 = { hypervisor_node = "macbeth", id = 15, is_vm = true }
-    fabric16 = { hypervisor_node = "fortuna", id = 16, is_vm = true }
+    fabric15 = {
+      hypervisor_node = "macbeth", id = 15, is_vm = true
+      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr1"]
+    }
+    fabric16 = {
+      hypervisor_node = "fortuna", id = 16, is_vm = true
+      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr1"]
+    }
   }
 
   border_leaves = {
@@ -29,7 +35,7 @@ fabric = {
       hypervisor_node  = "greatfox"
       id               = 20
       is_vm            = true
-      underlay_bridges = ["vmbr4001", "vmbr0"]
+      underlay_bridges = ["vmbr4001", "vmbr0", "vmbr4000"]
     }
   }
 }
