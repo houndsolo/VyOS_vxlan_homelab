@@ -1,58 +1,30 @@
-leaves = [
-  {
-    hostname  = "vtep-fichina"
-    host_node = "fichina"
-    node_id   = 10
-  },
-  {
-    hostname  = "vtep-fortuna"
-    host_node = "fortuna"
-    node_id   = 11
-  },
-  {
-    hostname  = "vtep-macbeth"
-    host_node = "macbeth"
-    node_id   = 12
-  },
-  {
-    hostname  = "vtep-titania"
-    host_node = "titania"
-    node_id   = 13
-  },
-  {
-    hostname  = "vtep-zoness"
-    host_node = "zoness"
-    node_id   = 14
-  },
-  {
-    hostname  = "vtep-venom"
-    host_node = "venom"
-    node_id   = 17
-  },
-  {
-    hostname  = "vtep-eldarad"
-    host_node = "eldarad"
-    node_id   = 21
+fabric = {
+  spines = {
+    rtr1 = { id = 1 }
+    rtr2 = { id = 2 }
   }
-]
 
-border_leaves = [
-  {
-    hostname  = "vtep-border-1"
-    host_node = "fichina"
-    node_id   = 18
-  },
-  {
-    hostname  = "vtep-border-2"
-    host_node = "eldarad"
-    node_id   = 19
+  leaves = {
+    fichina = { hypervisor_node = "fichina", id = 10, is_vm = true }
+    fortuna = { hypervisor_node = "fortuna", id = 11, is_vm = true }
+    macbeth = { hypervisor_node = "macbeth", id = 12, is_vm = true }
+    titania = { hypervisor_node = "titania", id = 13, is_vm = true }
+    zoness  = { hypervisor_node = "zoness", id = 14, is_vm = true }
+    venom   = { hypervisor_node = "venom", id = 17, is_vm = true }
+    eldarad = { hypervisor_node = "eldarad", id = 21, is_vm = true }
   }
-]
 
-gf_leafs = [
-  {
-    hostname  = "vtep-greatfox"
-    host_node = "greatfox"
-    node_id   = 20
+  border_leaves = {
+    border18 = { hypervisor_node = "fichina", id = 18, is_vm = true }
+    border19 = { hypervisor_node = "eldarad", id = 19, is_vm = true }
   }
-]
+
+  leaves_greatfox = {
+    greatfox = {
+      hypervisor_node  = "greatfox"
+      id               = 20
+      is_vm            = true
+      underlay_bridges = ["vmbr4001", "vmbr0"]
+    }
+  }
+}

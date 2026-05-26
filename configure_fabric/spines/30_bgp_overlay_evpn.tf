@@ -35,7 +35,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_leaf_overlay" {
 }
 
 resource "vyos_protocols_bgp_neighbor" "vxlan_peering" {
-  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
+  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_overlay]
   identifier = { neighbor = "10.255.240.${each.value.id}" }
   peer_group = "leaf_overlay"

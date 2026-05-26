@@ -1,37 +1,26 @@
-variable "dns_servers" {
-  description = "DNS configuration"
-  type = list(string)
-  default = ["10.8.6.9"]
-}
+variable "fabric" {
+  type = object({
+    spines = map(object({
+      id = number
+    }))
 
-variable "spines" {
-  type = number
-  default = 2
-}
-
-variable "leaves" {
-  description = "List of regular VTEP leaf nodes."
-  type = list(object({
-    hostname  = string
-    host_node = string
-    node_id   = number
-  }))
-}
-
-variable "border_leaves" {
-  description = "List of border VTEP leaf nodes."
-  type = list(object({
-    hostname  = string
-    host_node = string
-    node_id   = number
-  }))
-}
-
-variable "gf_leafs" {
-  description = "List of Great Fox leaf nodes."
-  type = list(object({
-    hostname  = string
-    host_node = string
-    node_id   = number
-  }))
+    leaves = map(object({
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
+    }))
+    border_leaves = map(object({
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
+    }))
+    leaves_greatfox = map(object({
+      id               = number
+      hypervisor_node  = string
+      is_vm            = optional(bool, true)
+      underlay_bridges = optional(list(string), null)
+    }))
+  })
 }

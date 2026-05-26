@@ -1,27 +1,30 @@
-module "create_vyos_vms" {
-  for_each = { for leaf in var.leaves : leaf.node_id => leaf }
-  source = "./proxmox_vteps"
-  host_node = each.value
-  leaves= var.leaves
-  spines = var.spines
-}
+locals {
+  vm_leaves = merge(
+    { for name, leaf in var.fabric.leaves : name => merge(leaf, { hostname = "vtep-${name}" }) if leaf.is_vm },
+    { for name, leaf in var.fabric.border_leaves : name => merge(leaf, { hostname = "vtep-border-${leaf.id}" }) if leaf.is_vm }
+  )
 
-module "greatfox_vtep" {
-  for_each = { for leaf in var.gf_leafs : leaf.node_id => leaf }
-  source = "./greatfox_vtep"
-  host_node = each.value
-  leaves= var.leaves
-  spines = var.spines
-  providers = {
-    proxmox    = proxmox.greatfox
+  vm_leaves_greatfox = {
+    for name, leaf in var.fabric.leaves_greatfox :
+    name => merge(leaf, { hostname = "vtep-${name}" })
+    if leaf.is_vm
   }
 }
 
-module "create_vyos_border_leaves" {
-  for_each = { for leaf in var.border_leaves : leaf.node_id => leaf }
-  source = "./proxmox_vteps"
+module "create_vyos_vms" {
+  for_each  = local.vm_leaves
+  source    = "./proxmox_vteps"
   host_node = each.value
-  leaves= var.leaves
-  spines = var.spines
+  spines    = length(var.fabric.spines)
 }
 
+module "create_vyos_vms_greatfox" {
+  for_each  = local.vm_leaves_greatfox
+  source    = "./proxmox_vteps"
+  host_node = each.value
+  spines    = length(var.fabric.spines)
+
+  providers = {
+    proxmox = proxmox.greatfox
+  }
+}

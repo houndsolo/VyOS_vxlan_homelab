@@ -69,7 +69,7 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_border_underlay_lo
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1" {
-  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
+  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_underlay]
   identifier = { neighbor = "eth1.${1000 + 100 * var.node.id + each.value.id}" }
   interface = {
@@ -80,7 +80,7 @@ resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1" {
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw2" {
-  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves)
+  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_leaf_underlay]
   identifier = { neighbor = "eth2.${2000 + 100 * var.node.id + each.value.id}" }
   interface = {
@@ -96,7 +96,7 @@ resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_
   identifier = { network = local.vxlan_loopback }
 }
 
-resource "vyos_protocols_bgp_address_family_ipv4_unicast_redistribute_ospf" "redistribute_BL_into_fabric" {}
+#resource "vyos_protocols_bgp_address_family_ipv4_unicast_redistribute_ospf" "redistribute_BL_into_fabric" {}
 
 
 

@@ -11,6 +11,18 @@ provider "vyos" {
 }
 
 provider "vyos" {
+  alias    = "fabric_leaves"
+  for_each = var.fabric.fabric_ext_leaves
+  endpoint = "https://10.20.10.${tostring(each.value.id)}"
+  api_key  = var.vyos_key
+  certificate = {
+    disable_verify = true
+  }
+  default_timeouts                       = 1
+  overwrite_existing_resources_on_create = true
+}
+
+provider "vyos" {
   alias    = "spines"
   for_each = var.fabric.spines
   endpoint = "https://10.20.10.${tostring(each.value.id)}"

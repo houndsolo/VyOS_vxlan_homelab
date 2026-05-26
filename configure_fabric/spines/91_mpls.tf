@@ -90,11 +90,10 @@ resource "vyos_protocols_ospf_interface" "enable_ospf_dum469" {
   area       = "0"
 }
 
-resource "vyos_protocols_ospf_interface" "enable_ospf_dum240" {
-  identifier = { interface = "dum240" }
-  passive    = { disable = false }
-  area       = "0"
-}
+#resource "vyos_protocols_ospf_interface" "enable_ospf_dum240" {
+#  identifier = { interface = "dum240" }
+#  passive    = { disable = false }
+#  area       = "0"
+#}
 
-resource "vyos_protocols_ospf_redistribute_bgp" "redistribute_fabric_vteps_to_BL" {}
-
+#resource "vyos_protocols_ospf_redistribute_bgp" "redistribute_fabric_vteps_to_BL" {}

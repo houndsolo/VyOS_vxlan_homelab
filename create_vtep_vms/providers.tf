@@ -1,7 +1,7 @@
 provider "proxmox" {
-  endpoint = "https://10.20.7.21:8006"
+  endpoint  = "https://10.20.7.21:8006"
   api_token = var.pve_api_token
-  insecure = true
+  insecure  = true
 
   ssh {
     username    = "root"
@@ -10,10 +10,10 @@ provider "proxmox" {
 }
 
 provider "proxmox" {
-  endpoint = "https://10.20.7.20:8006"
-  alias = "greatfox"
+  endpoint  = "https://10.20.7.20:8006"
+  alias     = "greatfox"
   api_token = var.gf_api_token
-  insecure = true
+  insecure  = true
 
   ssh {
     username    = "root"

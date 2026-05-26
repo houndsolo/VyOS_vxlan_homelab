@@ -97,4 +97,3 @@ resource "vyos_protocols_ospf_interface" "enable_ospf_dum240" {
   passive    = { disable = false }
   area       = "0"
 }
-

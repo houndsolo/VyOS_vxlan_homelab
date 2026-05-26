@@ -17,7 +17,7 @@ locals {
     enable_proxy_arp          = false
     proxy_arp_pvlan           = false
     external                  = false
-    neighbor_suppress         = true
+    neighbor_suppress         = false
     nolearning                = true
     vni_filter                = false
   }
@@ -32,6 +32,10 @@ variable "fabric" {
     leaves = map(object({
       id              = number
       hypervisor_node = string
+    }))
+    fabric_ext_leaves = map(object({
+      id               = number
+      hypervisor_node  = string
     }))
     border_leaves = map(object({
       id              = number

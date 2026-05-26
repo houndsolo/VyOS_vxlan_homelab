@@ -1,16 +1,16 @@
 resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
-  name        = var.host_node.hostname
-  description = "managed by opentofu"
-  tags        = ["opentofu", "debian", "vyos", "vxlan"]
-  started = true
-  keyboard_layout         = "en-us"
-  migrate                 = false
-  on_boot                 = true
-  reboot                  = false
-  stop_on_destroy         = true
+  name            = var.host_node.hostname
+  description     = "managed by opentofu"
+  tags            = ["opentofu", "debian", "vyos", "vxlan"]
+  started         = true
+  keyboard_layout = "en-us"
+  migrate         = false
+  on_boot         = true
+  reboot          = false
+  stop_on_destroy = true
 
 
-  node_name = "${var.host_node.host_node}"
+  node_name = var.host_node.hypervisor_node
   vm_id     = local.vm_id
 
   agent {
@@ -25,13 +25,13 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
     datastore_id = "ceph_rbd"
     import_from  = "cephfs:import/vyos-1.5-rolling-202605050104-qcow2-amd64.qcow2"
     interface    = "virtio0"
-    iothread    = true
+    iothread     = true
     size         = 10
   }
 
   initialization {
-    interface = "scsi0"
-    datastore_id = "ceph_rbd"
+    interface         = "scsi0"
+    datastore_id      = "ceph_rbd"
     user_data_file_id = "cephfs:snippets/vyos_api.yml"
     ip_config {
       ipv4 {
@@ -44,39 +44,33 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
 
   network_device {
     disconnected = false
-    bridge = "vmbr0"
-    model = "virtio"
-  }
-
-dynamic "network_device" {
-  for_each = [for i in range(var.spines) : i]  # Use index directly
-  content {
-    disconnected = false
-    bridge       = "vmbr${tostring(4001 + network_device.value)}"  # Start at 4001
+    bridge       = "vmbr0"
     model        = "virtio"
-    mtu          = 1
   }
-}
 
-  network_device {
-    disconnected = false
-    bridge = "vmbr4000"
-    model = "virtio"
-    mtu   = 1
+  dynamic "network_device" {
+    for_each = local.underlay_bridges
+    content {
+      disconnected = false
+      bridge       = network_device.value
+      model        = "virtio"
+      mtu          = 1
+    }
   }
+
 
   serial_device {}
 
   cpu {
     #  architecture = "x86_64"
-    cores        = 4
-    flags        = []
-    hotplugged   = 0
-    limit        = 0
-    numa         = false
-    sockets      = 1
-    type         = "x86-64-v2-AES"
-    units        = 1024
+    cores      = 4
+    flags      = []
+    hotplugged = 0
+    limit      = 0
+    numa       = false
+    sockets    = 1
+    type       = "x86-64-v2-AES"
+    units      = 1024
   }
 
   memory {
@@ -92,22 +86,22 @@ dynamic "network_device" {
 
   vga {
     #enabled = false
-    memory  = 16
-    type    = "std"
+    memory = 16
+    type   = "std"
   }
-  timeout_clone           = 1800
-  timeout_create          = 1800
-  timeout_migrate         = 1800
-  timeout_reboot          = 1800
-  timeout_shutdown_vm     = 1800
-  timeout_start_vm        = 1800
-  timeout_stop_vm         = 300
+  timeout_clone       = 1800
+  timeout_create      = 1800
+  timeout_migrate     = 1800
+  timeout_reboot      = 1800
+  timeout_shutdown_vm = 1800
+  timeout_start_vm    = 1800
+  timeout_stop_vm     = 300
 
 
   lifecycle {
     ignore_changes = [
       #network_device[6].disconnected,
-      initialization[0].user_account,  # This ignores changes to the user_account block within initialization
+      initialization[0].user_account, # This ignores changes to the user_account block within initialization
       #vga[0].enabled,  # This ignores changes to the user_account block within initialization
     ]
   }

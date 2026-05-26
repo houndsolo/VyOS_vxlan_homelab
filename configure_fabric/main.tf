@@ -55,3 +55,17 @@ module "configure_vyos_border_vms" {
   vxlan = local.vxlan
 }
 
+module "configure_vyos_fabric_vms" {
+  for_each  = var.fabric.fabric_ext_leaves
+  source    = "./leaves"
+  providers = { vyos = vyos.fabric_leaves[each.key] }
+  node      = each.value
+  dns       = var.dns
+  fabric    = var.fabric
+
+  bgp_l2vpn = local.bgp_l2vpn
+  vnis      = var.vnis
+
+  vxlan = local.vxlan
+}
+
