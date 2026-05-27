@@ -35,7 +35,7 @@ resource "vyos_interfaces_ethernet" "set_eth2_mtu" {
 
 resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
   depends_on = [vyos_interfaces_ethernet.set_eth1_mtu]
-  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
+  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.fabric_ext_leaves)
 
   identifier = {
     ethernet = "eth1"
@@ -49,7 +49,7 @@ resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
 
 resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch2" {
   depends_on = [vyos_interfaces_ethernet.set_eth2_mtu]
-  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
+  for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.fabric_ext_leaves)
 
   identifier = {
     ethernet = "eth2"
@@ -61,14 +61,51 @@ resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch2" {
 
 }
 
+resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1_ldp" {
+  depends_on = [vyos_interfaces_ethernet.set_eth1_mtu]
+  for_each   = var.fabric.border_leaves
+  address    = ["10.251.${var.node.id}${each.value.id}.0/31"]
+
+  identifier = {
+    ethernet = "eth1"
+    vif      = 1000 + 100 * var.node.id + each.value.id
+  }
+  ipv6 = {}
+  description = "mpls ldp ipv4 link"
+  mtu         = "9169"
+
+}
+
+resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch2_ldp" {
+  depends_on = [vyos_interfaces_ethernet.set_eth2_mtu]
+  for_each   = var.fabric.border_leaves
+  address    = ["10.252.${var.node.id}${each.value.id}.0/31"]
+
+  identifier = {
+    ethernet = "eth2"
+    vif      = 2000 + 100 * var.node.id + each.value.id
+  }
+  ipv6 = {}
+  description = "mpls ldp ipv4 link"
+  mtu         = "9169"
+
+}
+
+
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth1" {
-  depends_on = [vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1]
+  depends_on = [
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1,
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch1_ldp
+  ]
   for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
   identifier = { interface = "eth1.${1000 + 100 * var.node.id + each.value.id}" }
 }
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth2" {
-  depends_on = [vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2]
+  depends_on = [
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2,
+    vyos_interfaces_ethernet_vif.link_to_leaves_vifs_switch2_ldp
+  ]
   for_each   = merge(var.fabric.leaves, var.fabric.leaves_greatfox, var.fabric.border_leaves, var.fabric.fabric_ext_leaves)
   identifier = { interface = "eth2.${2000 + 100 * var.node.id + each.value.id}" }
 }

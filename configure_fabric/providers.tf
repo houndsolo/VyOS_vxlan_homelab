@@ -8,6 +8,16 @@ provider "vyos" {
   }
   default_timeouts                       = 1
   overwrite_existing_resources_on_create = true
+  manual_binding_overrides = {
+
+    "protocols bgp"                            = "bgp"
+    "protocols bgp address-family l2vpn-evpn"  = "bgp-evpn"
+    "protocols bgp address-family ipv4-vpn"    = "bgp-vpnv4"
+
+    "vrf"                                      = "vrf"
+    "interfaces vxlan"                         = "vxlan"
+    "interfaces bridge"                        = "bridge"
+  }
 }
 
 provider "vyos" {
@@ -20,6 +30,16 @@ provider "vyos" {
   }
   default_timeouts                       = 1
   overwrite_existing_resources_on_create = true
+  manual_binding_overrides = {
+
+    "protocols bgp"                            = "bgp"
+    "protocols bgp address-family l2vpn-evpn"  = "bgp-evpn"
+    "protocols bgp address-family ipv4-vpn"    = "bgp-vpnv4"
+
+    "vrf"                                      = "vrf"
+    "interfaces vxlan"                         = "vxlan_bridges"
+    "interfaces bridge"                        = "vxlan_bridges"
+  }
 }
 
 provider "vyos" {
@@ -32,6 +52,18 @@ provider "vyos" {
   }
   default_timeouts                       = 1
   overwrite_existing_resources_on_create = true
+  manual_binding_overrides = {
+
+    "protocols mpls"                           = "mpls"
+
+    "protocols bgp"                            = "bgp"
+    "protocols bgp address-family l2vpn-evpn"  = "bgp-evpn"
+    "protocols bgp address-family ipv4-vpn"    = "bgp-vpnv4"
+
+    "vrf"                                      = "vrf"
+    "interfaces vxlan"                         = "vxlan"
+    "interfaces bridge"                        = "bridge"
+  }
 }
 
 provider "vyos" {
@@ -43,6 +75,16 @@ provider "vyos" {
   }
   default_timeouts                       = 1
   overwrite_existing_resources_on_create = true
+  manual_binding_overrides = {
+
+    "protocols bgp"                            = "bgp"
+    "protocols bgp address-family l2vpn-evpn"  = "bgp-evpn"
+    "protocols bgp address-family ipv4-vpn"    = "bgp-vpnv4"
+
+    "vrf"                                      = "vrf"
+    "interfaces vxlan"                         = "vxlan"
+    "interfaces bridge"                        = "bridge"
+  }
 }
 
 provider "vyos" {
@@ -59,6 +101,15 @@ provider "vyos" {
 
   # Batch all MPLS resources into one VyOS configure/commit transaction.
   manual_binding_overrides = {
-    "protocols mpls" = "mpls"
+    "protocols mpls"                           = "mpls"
+    "protocols mpls ldp"                       = "mpls"
+
+    "protocols bgp"                            = "bgp"
+    "protocols bgp address-family l2vpn-evpn"  = "bgp-evpn"
+    "protocols bgp address-family ipv4-vpn"    = "bgp-vpnv4"
+
+    "vrf"                                      = "vrf"
+    "interfaces vxlan"                         = "vxlan"
+    "interfaces bridge"                        = "bridge"
   }
 }

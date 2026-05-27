@@ -22,31 +22,3 @@ resource "vyos_protocols_bgp_neighbor" "fw_wan_conectivity" {
 }
 
 
-resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch1" {
-  depends_on = [vyos_interfaces_ethernet.link_to_spines_switch1]
-  for_each   = var.fabric.spines
-  address    = ["10.251.${each.value.id}${var.node.id}.1/31"]
-
-  identifier = {
-    ethernet = "eth1"
-    vif      = 1000 + 100 * each.value.id + var.node.id
-  }
-  description = "mpls ldp ipv4 link"
-  mtu         = "9169"
-
-}
-
-resource "vyos_interfaces_ethernet_vif" "link_to_leaves_vifs_switch2" {
-  depends_on = [vyos_interfaces_ethernet.link_to_spines_switch2]
-  for_each   = var.fabric.spines
-  address    = ["10.252.${each.value.id}${var.node.id}.1/31"]
-
-  identifier = {
-    ethernet = "eth2"
-    vif      = 2000 + 100 * each.value.id + var.node.id
-  }
-  description = "mpls ldp ipv4 link"
-  mtu         = "9169"
-
-}
-
