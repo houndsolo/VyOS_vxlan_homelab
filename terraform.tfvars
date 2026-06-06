@@ -53,8 +53,8 @@ vnis = {
       vrf       = "lylat_infra"
       vrf_table = 700
 
-      ipv4_rt_imports = "700:6600"
-      ipv4_rt_exports = "700:6200"
+      #ipv4_rt_imports = "700:6600"
+      #ipv4_rt_exports = "700:6200"
 
       BL_ipv4_rt_imports = "420:666 420:77"
       BL_ipv4_rt_exports = "700:6200"
@@ -99,8 +99,8 @@ vnis = {
       vrf       = "lylat_service"
       vrf_table = 1000
 
-      ipv4_rt_imports = "700:6200"
-      ipv4_rt_exports = "700:6600"
+      #ipv4_rt_imports = "700:6200"
+      #ipv4_rt_exports = "700:6600"
 
       BL_ipv4_rt_imports = "420:666"
       BL_ipv4_rt_exports = "700:6600"
@@ -147,12 +147,12 @@ vnis = {
       vrf_table = 1337
 
       #ipv4_rt_imports = ""
-      ipv4_rt_exports = "700:6900"
+      #ipv4_rt_exports = "700:6900"
 
-      #BL_ipv4_rt_imports = ""
+      BL_ipv4_rt_imports = "420:666"
       BL_ipv4_rt_exports = "700:6900"
 
-      export_vpn_ipv4 = false
+      export_vpn_ipv4 = true
       redistribute_ipv4 = {
         connected = {}
       }
