@@ -56,10 +56,10 @@ vnis = {
       ipv4_rt_imports = "700:6600"
       ipv4_rt_exports = "700:6200"
 
-      #BL_ipv4_rt_imports = ""
+      BL_ipv4_rt_imports = "420:666 420:77"
       BL_ipv4_rt_exports = "700:6200"
 
-      export_vpn_ipv4 = false
+      export_vpn_ipv4 = true
       evpn_rt_imports = [
         "700:6200",
       ]
@@ -106,9 +106,6 @@ vnis = {
       BL_ipv4_rt_exports = "700:6600"
 
       export_vpn_ipv4 = true
-      redistribute_ipv4 = {
-        connected = {}
-      }
       evpn_rt_imports = [
         "700:6600",
       ]
@@ -116,6 +113,10 @@ vnis = {
         "700:6600",
       ]
       ext_l3_vlan = 66
+
+      redistribute_ipv4 = {
+        connected = {}
+      }
 
       l2 = {
         6 = {

@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     proxmox = {
-      source  = "local/houndsolo/proxmox"
-      version = "0.100.0"
+      source  = "local/mechanic/proxmox"
+      version = "0.108.0"
     }
   }
 }
