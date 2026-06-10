@@ -53,8 +53,8 @@ vnis = {
       vrf       = "lylat_infra"
       vrf_table = 700
 
-      #ipv4_rt_imports = "700:6600"
-      #ipv4_rt_exports = "700:6200"
+      ipv4_rt_imports = "700:6600"
+      ipv4_rt_exports = "700:6200"
 
       BL_ipv4_rt_imports = "420:666 420:77"
       BL_ipv4_rt_exports = "700:6200"
@@ -82,16 +82,16 @@ vnis = {
           advertise_svi_ip     = false
           export_ipv4_unicast  = true
         }
-        5 = {
-          vni                  = 9005
-          vlan_id              = 5
-          anycast_gw_ip        = "10.5.0.5"
-          anycast_gw_cidr      = 16
-          anycast_mac          = "0e:00:00:10:00:05"
-          advertise_default_gw = false
-          advertise_svi_ip     = false
-          export_ipv4_unicast  = true
-        }
+        #5 = {
+        #  vni                  = 9005
+        #  vlan_id              = 5
+        #  anycast_gw_ip        = "10.5.0.5"
+        #  anycast_gw_cidr      = 16
+        #  anycast_mac          = "0e:00:00:10:00:05"
+        #  advertise_default_gw = false
+        #  advertise_svi_ip     = false
+        #  export_ipv4_unicast  = true
+        #}
       }
     }
     6600 = {
@@ -99,8 +99,8 @@ vnis = {
       vrf       = "lylat_service"
       vrf_table = 1000
 
-      #ipv4_rt_imports = "700:6200"
-      #ipv4_rt_exports = "700:6600"
+      ipv4_rt_imports = "700:6200 700:6900"
+      ipv4_rt_exports = "700:6600"
 
       BL_ipv4_rt_imports = "420:666"
       BL_ipv4_rt_exports = "700:6600"
@@ -127,7 +127,7 @@ vnis = {
           anycast_mac          = "0e:00:00:10:00:06"
           advertise_default_gw = false
           advertise_svi_ip     = false
-          export_ipv4_unicast  = true
+          export_ipv4_unicast  = false
         }
         8 = {
           vni                  = 9008
@@ -146,8 +146,8 @@ vnis = {
       vrf       = "lylat_lan"
       vrf_table = 1337
 
-      #ipv4_rt_imports = ""
-      #ipv4_rt_exports = "700:6900"
+      ipv4_rt_imports = "700:6600"
+      ipv4_rt_exports = "700:6900"
 
       BL_ipv4_rt_imports = "420:666"
       BL_ipv4_rt_exports = "700:6900"

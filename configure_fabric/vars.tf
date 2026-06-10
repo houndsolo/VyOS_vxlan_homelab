@@ -2,7 +2,7 @@ locals {
   bgp_l2vpn = {
     her              = true
     flooding_disable = false
-    advertise_svi    = false
+    advertise_svi    = true
     advertise_vni    = true
     rt_auto_derive   = false
   }
@@ -17,7 +17,7 @@ locals {
     enable_proxy_arp          = false
     proxy_arp_pvlan           = false
     external                  = false
-    neighbor_suppress         = false
+    neighbor_suppress         = true
     nolearning                = true
     vni_filter                = false
   }
