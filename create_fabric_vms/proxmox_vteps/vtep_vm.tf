@@ -24,6 +24,7 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
   disk {
     datastore_id = "ceph_rbd"
     import_from  = "cephfs:import/vyos-1.5-rolling-202605050104-qcow2-amd64.qcow2"
+    #import_from  = "cephfs:import/vyos-1.5-rolling-202606080213-qcow2-amd64.qcow2"
     interface    = "virtio0"
     iothread     = true
     size         = 10
