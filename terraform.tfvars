@@ -5,29 +5,29 @@ fabric = {
   }
 
   leaves = {
-    fichina = { hypervisor_node = "fichina", id = 10, is_vm = true }
-    fortuna = { hypervisor_node = "fortuna", id = 11, is_vm = true }
+    fichina = { hypervisor_node = "fichina", id = 11, is_vm = true }
     macbeth = { hypervisor_node = "macbeth", id = 12, is_vm = true }
     titania = { hypervisor_node = "titania", id = 13, is_vm = true }
-    zoness  = { hypervisor_node = "zoness", id = 14, is_vm = true }
-    venom   = { hypervisor_node = "venom", id = 17, is_vm = true }
-    eldarad = { hypervisor_node = "eldarad", id = 21, is_vm = true }
+    zoness  = { hypervisor_node = "zoness",  id = 14, is_vm = true }
+    fortuna = { hypervisor_node = "fortuna", id = 15, is_vm = true }
+    eldarad = { hypervisor_node = "eldarad", id = 16, is_vm = true }
+    venom   = { hypervisor_node = "venom",   id = 17, is_vm = true }
   }
 
   fabric_ext_leaves = {
-    fabric15 = {
-      hypervisor_node  = "macbeth", id = 15, is_vm = true
-      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr1"]
+    fabric-1 = {
+      hypervisor_node  = "venom", id = 31, is_vm = true
+      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr100"]
     }
-    fabric16 = {
-      hypervisor_node  = "fortuna", id = 16, is_vm = true
-      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr1"]
+    fabric-2 = {
+      hypervisor_node  = "eldarad", id = 32, is_vm = true
+      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr100"]
     }
   }
 
   border_leaves = {
-    border18 = { hypervisor_node = "fichina", id = 18, is_vm = true }
-    border19 = { hypervisor_node = "eldarad", id = 19, is_vm = true }
+    border-1 = { hypervisor_node = "fichina", id = 41, is_vm = true }
+    border-2 = { hypervisor_node = "eldarad", id = 42, is_vm = true }
   }
 
   leaves_greatfox = {
@@ -82,16 +82,16 @@ vnis = {
           advertise_svi_ip     = false
           export_ipv4_unicast  = true
         }
-        #5 = {
-        #  vni                  = 9005
-        #  vlan_id              = 5
-        #  anycast_gw_ip        = "10.5.0.5"
-        #  anycast_gw_cidr      = 16
-        #  anycast_mac          = "0e:00:00:10:00:05"
-        #  advertise_default_gw = false
-        #  advertise_svi_ip     = false
-        #  export_ipv4_unicast  = true
-        #}
+        5 = {
+          vni                  = 9005
+          vlan_id              = 5
+          anycast_gw_ip        = "10.5.0.5"
+          anycast_gw_cidr      = 16
+          anycast_mac          = "0e:00:00:10:00:05"
+          advertise_default_gw = false
+          advertise_svi_ip     = false
+          export_ipv4_unicast  = true
+        }
       }
     }
     6600 = {
@@ -127,7 +127,7 @@ vnis = {
           anycast_mac          = "0e:00:00:10:00:06"
           advertise_default_gw = false
           advertise_svi_ip     = false
-          export_ipv4_unicast  = false
+          export_ipv4_unicast  = true
         }
         8 = {
           vni                  = 9008

@@ -1,5 +1,5 @@
 provider "proxmox" {
-  endpoint  = "https://10.20.7.21:8006"
+  endpoint  = "https://10.20.7.11:8006"
   api_token = var.pve_api_token
   insecure  = true
 

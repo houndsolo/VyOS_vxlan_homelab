@@ -6,6 +6,7 @@ locals {
 
   ospf_interfaces = flatten([
     for spine in var.fabric.spines : [
+      "eth1.${1000 + 100 * spine.id + var.node.id}",
       "eth2.${2000 + 100 * spine.id + var.node.id}",
     ]
   ])
@@ -87,14 +88,6 @@ resource "vyos_protocols_ospf_interface" "enable_ospf" {
   area       = "0"
 }
 
-resource "vyos_protocols_ospf_interface" "enable_ospf_non_broadcast" {
-  depends_on = [vyos_interfaces_ethernet_vif.link_to_spines_vifs_switch1]
-  for_each   = var.fabric.spines
-  identifier = { interface = "eth1.${1000 + 100 * each.value.id + var.node.id}" }
-  passive    = { disable = true }
-  network    = "non-broadcast"
-  area       = "0"
-}
 
 resource "vyos_protocols_ospf_neighbor" "non_broadcast_neighbor" {
   for_each   = var.fabric.spines

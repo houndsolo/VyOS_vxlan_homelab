@@ -17,7 +17,7 @@ locals {
     enable_proxy_arp          = false
     proxy_arp_pvlan           = false
     external                  = false
-    neighbor_suppress         = true
+    neighbor_suppress         = false
     nolearning                = true
     vni_filter                = false
   }

@@ -5,6 +5,7 @@ locals {
   mpls_v6_loopback_net = "fd69:420::${var.node.id}"
   ospf_interfaces = concat(flatten([
     for leaf in var.fabric.border_leaves : [
+      "eth1.${1000 + 100 * var.node.id + leaf.id}",
       "eth2.${2000 + 100 * var.node.id + leaf.id}"
     ]
     ]),
@@ -71,18 +72,6 @@ resource "vyos_protocols_ospf_interface" "enable_ospf" {
   area       = "0"
 }
 
-resource "vyos_protocols_ospf_interface" "enable_ospf_non_broadcast" {
-  for_each   = var.fabric.border_leaves
-  identifier = { interface = "eth1.${1000 + 100 * var.node.id + each.value.id}" }
-  passive    = { disable = true }
-  network    = "non-broadcast"
-  area       = "0"
-}
-
-resource "vyos_protocols_ospf_neighbor" "non_broadcast_neighbor" {
-  for_each   = var.fabric.border_leaves
-  identifier = { neighbor = "10.251.${100 * var.node.id + each.value.id}.1" }
-}
 
 resource "vyos_protocols_ospf_interface" "enable_ospf_dum469" {
   identifier = { interface = "dum469" }
