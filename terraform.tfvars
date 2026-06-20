@@ -19,10 +19,10 @@ fabric = {
       hypervisor_node  = "venom", id = 31, is_vm = true
       underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr100"]
     }
-    fabric-2 = {
-      hypervisor_node  = "eldarad", id = 32, is_vm = true
-      underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr100"]
-    }
+    #fabric-2 = {
+    #  hypervisor_node  = "eldarad", id = 32, is_vm = true
+    #  underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr100"]
+    #}
   }
 
   border_leaves = {
