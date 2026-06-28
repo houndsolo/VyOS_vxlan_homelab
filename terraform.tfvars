@@ -82,16 +82,16 @@ vnis = {
           advertise_svi_ip     = false
           export_ipv4_unicast  = true
         }
-        5 = {
-          vni                  = 9005
-          vlan_id              = 5
-          anycast_gw_ip        = "10.5.0.5"
-          anycast_gw_cidr      = 16
-          anycast_mac          = "0e:00:00:10:00:05"
-          advertise_default_gw = false
-          advertise_svi_ip     = false
-          export_ipv4_unicast  = true
-        }
+        #5 = {
+        #  vni                  = 9005
+        #  vlan_id              = 5
+        #  anycast_gw_ip        = "10.5.0.5"
+        #  anycast_gw_cidr      = 16
+        #  anycast_mac          = "0e:00:00:10:00:05"
+        #  advertise_default_gw = false
+        #  advertise_svi_ip     = false
+        #  export_ipv4_unicast  = true
+        #}
       }
     }
     6600 = {
@@ -102,7 +102,7 @@ vnis = {
       ipv4_rt_imports = "700:6200 700:6900"
       ipv4_rt_exports = "700:6600"
 
-      BL_ipv4_rt_imports = "420:666"
+      BL_ipv4_rt_imports = "420:1337 420:666"
       BL_ipv4_rt_exports = "700:6600"
 
       export_vpn_ipv4 = true
@@ -149,7 +149,7 @@ vnis = {
       ipv4_rt_imports = "700:6600"
       ipv4_rt_exports = "700:6900"
 
-      BL_ipv4_rt_imports = "420:666"
+      BL_ipv4_rt_imports = "420:1337 420:666"
       BL_ipv4_rt_exports = "700:6900"
 
       export_vpn_ipv4 = true
