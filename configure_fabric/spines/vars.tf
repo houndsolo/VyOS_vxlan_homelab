@@ -6,16 +6,11 @@ locals {
 
   vxlan_loopback         = "${local.vxlan_loopback_net}/32"
   vxlan_loopback_net     = "10.255.240.${var.node.id}"
+  vxlan_loopback_v6      = "${local.vxlan_loopback_v6_net}/128"
+  vxlan_loopback_v6_net  = "fd69:255:240::${var.node.id}"
   bgp_system_as          = 700
   vxlan_source_interface = "dum240"
 
-  vxlan_peers = {
-    for leaf_name, leaf in var.fabric.leaves :
-    leaf_name => merge(leaf, {
-      vxlan_loopback = "10.255.240.${leaf.id}"
-    })
-    if leaf.id != var.node.id
-  }
   l2_vnis = merge([
     for l3_key, l3 in var.vnis.l3 : {
       for l2_key, l2 in try(l3.l2, {}) :

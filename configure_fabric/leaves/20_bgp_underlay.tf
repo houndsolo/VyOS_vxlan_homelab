@@ -30,7 +30,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
   }
   remote_as = "external"
   address_family = {
-    ipv4_unicast = {
+    ipv6_unicast = {
       soft_reconfiguration = { inbound = true }
       route_map = {
         export = "local_as_rm"
@@ -48,10 +48,10 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as"
   no_prepend = { replace_as = true }
 }
 
-resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1" {
+resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors" {
   for_each   = var.fabric.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = "eth1.${1000 + 100 * each.value.id + var.node.id}" }
+  identifier = { neighbor = each.value.uplink_if }
   interface = {
     v6only = {
       peer_group = "spine_underlay"
@@ -59,19 +59,8 @@ resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1" {
   }
 }
 
-resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw2" {
-  for_each   = var.fabric.spines
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = "eth2.${2000 + 100 * each.value.id + var.node.id}" }
-  interface = {
-    v6only = {
-      peer_group = "spine_underlay"
-    }
-  }
-}
 
-resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback" {
+resource "vyos_protocols_bgp_address_family_ipv6_unicast_network" "redistribute_loopback" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
-  identifier = { network = local.vxlan_loopback }
+  identifier = { network = local.vxlan_loopback_v6}
 }
-

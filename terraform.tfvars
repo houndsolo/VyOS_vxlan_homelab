@@ -1,7 +1,9 @@
 fabric = {
   spines = {
-    rtr1 = { id = 1 }
-    rtr2 = { id = 2 }
+    #mikrotik 326
+    rtr1 = { id = 1 , uplink_if = "eth1", v6_peering = "fd69:255:240::1"}
+    #mikrotik 326
+    rtr2 = { id = 2 , uplink_if = "eth2", v6_peering = "fd69:255:240::2"}
   }
 
   leaves = {
@@ -26,8 +28,10 @@ fabric = {
   }
 
   border_leaves = {
-    border-1 = { hypervisor_node = "fichina", id = 41, is_vm = true }
-    border-2 = { hypervisor_node = "eldarad", id = 42, is_vm = true }
+    # n100 mini pc
+    border-1 = { id = 18, is_vm = false }
+    # n100 mini pc
+    border-2 = { id = 19, is_vm = false }
   }
 
   leaves_greatfox = {
@@ -35,7 +39,7 @@ fabric = {
       hypervisor_node  = "greatfox"
       id               = 20
       is_vm            = true
-      underlay_bridges = ["vmbr4001", "vmbr0", "vmbr4000"]
+      #underlay_bridges = ["vmbr4001", "vmbr4002", "vmbr4000"]
     }
   }
 }

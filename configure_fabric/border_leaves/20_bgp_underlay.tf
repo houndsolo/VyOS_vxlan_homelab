@@ -1,7 +1,5 @@
 resource "vyos_protocols_bgp" "enable_bgp" {
   depends_on = [
-    #vyos_protocols_bfd_peer.spine_bfd_peers,
-    #    vyos_interfaces_ethernet.link_to_vms,
     vyos_interfaces_dummy.dummy_interface
   ]
   system_as = local.bgp_system_as
@@ -21,15 +19,16 @@ resource "vyos_protocols_bgp_parameters_bestpath_as_path" "bgp_multipath_relax" 
 resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
   depends_on = [
     vyos_protocols_bgp.enable_bgp,
+    vyos_policy_route_map.create_route_map_local_as
   ]
   identifier = { peer_group = "spine_underlay" }
   capability = {
-    dynamic          = true
+    #dynamic = true
     extended_nexthop = true
   }
   remote_as = "external"
   address_family = {
-    ipv4_unicast = {
+    ipv6_unicast = {
       soft_reconfiguration = { inbound = true }
       route_map = {
         export = "local_as_rm"
@@ -39,8 +38,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
 }
 
 resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as" {
-  depends_on = [
-  ]
+  depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
   identifier = {
     local_as   = local.underlay_local_as
     peer_group = "spine_underlay"
@@ -48,10 +46,10 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as"
   no_prepend = { replace_as = true }
 }
 
-resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1" {
+resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors" {
   for_each   = var.fabric.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = "eth1.${1000 + 100 * each.value.id + var.node.id}" }
+  identifier = { neighbor = each.value.uplink_if }
   interface = {
     v6only = {
       peer_group = "spine_underlay"
@@ -59,18 +57,8 @@ resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw1" {
   }
 }
 
-resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors_sw2" {
-  for_each   = var.fabric.spines
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = "eth2.${2000 + 100 * each.value.id + var.node.id}" }
-  interface = {
-    v6only = {
-      peer_group = "spine_underlay"
-    }
-  }
-}
 
-resource "vyos_protocols_bgp_address_family_ipv4_unicast_network" "redistribute_loopback" {
+resource "vyos_protocols_bgp_address_family_ipv6_unicast_network" "redistribute_loopback" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
-  identifier = { network = local.vxlan_loopback }
+  identifier = { network = local.vxlan_loopback_v6}
 }

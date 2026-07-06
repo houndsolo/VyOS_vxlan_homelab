@@ -16,6 +16,18 @@ resource "vyos_policy_as_path_list_rule" "as_path_local_rule" {
   regex  = "^$"
 }
 
+resource "vyos_policy_as_path_list_rule" "as_path_local_rule_extl3" {
+  depends_on = [resource.vyos_policy_as_path_list.create_as_path_list]
+
+  identifier = {
+    as_path_list = "local_as_export"
+    rule         = 20
+  }
+
+  action = "permit"
+  regex  = "^420$"
+}
+
 resource "vyos_policy_route_map" "create_route_map_local_as" {
   depends_on = [resource.vyos_policy_as_path_list_rule.as_path_local_rule]
   identifier = {

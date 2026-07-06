@@ -3,6 +3,7 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L2" {
   for_each         = local.l2_vnis
   identifier       = { vxlan = "vxlan${each.value.vni}" }
   source_interface = local.vxlan_source_interface
+  source_address   = local.vxlan_loopback_v6_net
   mtu              = var.vxlan.mtu
   ip = {
     disable_arp_filter        = var.vxlan.disable_arp_filter
@@ -14,10 +15,10 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L2" {
     proxy_arp_pvlan           = var.vxlan.proxy_arp_pvlan
   }
   ipv6 = {
-    disable_forwarding = true
+    disable_forwarding = false
   }
   parameters = {
-    external          = false
+    external          = var.vxlan.external
     neighbor_suppress = var.vxlan.neighbor_suppress
     nolearning        = var.vxlan.nolearning
     vni_filter        = var.vxlan.vni_filter
@@ -31,6 +32,7 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L3" {
   identifier       = { vxlan = "vxlan${each.value.vni}" }
   description      = "Layer 3 for ${each.value.vrf} vrf"
   source_interface = local.vxlan_source_interface
+  source_address   = local.vxlan_loopback_v6_net
   mtu              = var.vxlan.mtu
   ip = {
     disable_arp_filter        = var.vxlan.disable_arp_filter
@@ -42,10 +44,10 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L3" {
     proxy_arp_pvlan           = var.vxlan.proxy_arp_pvlan
   }
   ipv6 = {
-    disable_forwarding = true
+    disable_forwarding = false
   }
   parameters = {
-    external          = false
+    external          = var.vxlan.external
     neighbor_suppress = var.vxlan.neighbor_suppress
     nolearning        = var.vxlan.nolearning
     vni_filter        = var.vxlan.vni_filter

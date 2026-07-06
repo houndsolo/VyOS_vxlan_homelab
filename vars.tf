@@ -2,29 +2,32 @@ variable "fabric" {
   type = object({
     spines = map(object({
       id = number
+      uplink_if = string
+      v6_peering = string
+      hypervisor_node  = optional(string, null)
     }))
 
     leaves = map(object({
       id               = number
-      hypervisor_node  = string
+      hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))
     fabric_ext_leaves = map(object({
       id               = number
-      hypervisor_node  = string
+      hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))
     border_leaves = map(object({
       id               = number
-      hypervisor_node  = string
+      hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))
     leaves_greatfox = map(object({
       id               = number
-      hypervisor_node  = string
+      hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))

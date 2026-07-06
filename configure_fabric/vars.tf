@@ -24,28 +24,6 @@ locals {
 }
 
 variable "fabric" {
-  type = object({
-    spines = map(object({
-      id = number
-    }))
-
-    leaves = map(object({
-      id              = number
-      hypervisor_node = string
-    }))
-    fabric_ext_leaves = map(object({
-      id              = number
-      hypervisor_node = string
-    }))
-    border_leaves = map(object({
-      id              = number
-      hypervisor_node = string
-    }))
-    leaves_greatfox = map(object({
-      id              = number
-      hypervisor_node = string
-    }))
-  })
 }
 
 variable "dns" {

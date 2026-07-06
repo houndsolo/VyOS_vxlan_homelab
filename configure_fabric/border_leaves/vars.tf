@@ -1,24 +1,18 @@
 locals {
   l2_svd            = 9000
   underlay_local_as = 700 + var.node.id
-  hostname          = "LEAF-${var.node.id}"
+  hostname          = "BORDER-LEAF-${var.node.id}"
 
-  l3ext_peering_address_local  = ["10.255.240.${var.node.id}/32"]
   l3ext_peering_address_remote = "10.255.240.255"
+  #l3ext_peering_address_remote = "fd69:420::255"
   ext_l3_asn                   = 420
 
   vxlan_loopback         = "${local.vxlan_loopback_net}/32"
   vxlan_loopback_net     = "10.255.240.${var.node.id}"
+  vxlan_loopback_v6      = "${local.vxlan_loopback_v6_net}/128"
+  vxlan_loopback_v6_net  = "fd69:255:240::${var.node.id}"
   bgp_system_as          = 700
   vxlan_source_interface = "dum240"
-
-  vxlan_peers = {
-    for leaf_name, leaf in var.fabric.leaves :
-    leaf_name => merge(leaf, {
-      vxlan_loopback = "10.255.240.${leaf.id}"
-    })
-    if leaf.id != var.node.id
-  }
 
   l2_vnis = merge([
     for l3_key, l3 in var.vnis.l3 : {

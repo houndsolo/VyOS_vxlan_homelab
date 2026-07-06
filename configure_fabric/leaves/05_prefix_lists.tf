@@ -1,3 +1,5 @@
+# This creates a route map/ AS Path filter to only export originated routes into the BGP Underlay
+# aka path length of 0
 resource "vyos_policy_as_path_list" "create_as_path_list" {
   identifier = {
     as_path_list = "local_as_export"

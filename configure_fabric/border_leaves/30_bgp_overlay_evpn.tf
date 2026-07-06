@@ -35,6 +35,6 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_overlay" {
 resource "vyos_protocols_bgp_neighbor" "vxlan_peering" {
   for_each   = var.fabric.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_overlay]
-  identifier = { neighbor = "10.255.240.${each.value.id}" }
+  identifier = { neighbor = each.value.v6_peering }
   peer_group = "spine_overlay"
 }

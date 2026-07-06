@@ -1,8 +1,8 @@
-
 resource "vyos_interfaces_dummy" "dummy_interface" {
   identifier = { dummy = local.vxlan_source_interface }
   address = [
     local.vxlan_loopback,
+    local.vxlan_loopback_v6,
     local.mpls_v6_loopback
   ]
   mtu = "9169"

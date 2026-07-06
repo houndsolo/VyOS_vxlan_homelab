@@ -1,5 +1,5 @@
 resource "vyos_interfaces_ethernet" "link_to_vms" {
-  depends_on  = [vyos_interfaces_ethernet_vif.link_to_spines_vifs_switch2]
+  depends_on  = [vyos_interfaces_ethernet.link_to_spines]
   identifier  = { ethernet = "eth3" }
   description = "link to vms"
   mtu         = "9119"
