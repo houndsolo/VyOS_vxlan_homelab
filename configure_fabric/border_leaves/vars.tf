@@ -12,6 +12,7 @@ locals {
   vxlan_loopback_v6      = "${local.vxlan_loopback_v6_net}/128"
   vxlan_loopback_v6_net  = "fd69:255:240::${var.node.id}"
   bgp_system_as          = 700
+  border_leaf_id_1_2     = var.node.id -17
   vxlan_source_interface = "dum240"
 
   l2_vnis = merge([
