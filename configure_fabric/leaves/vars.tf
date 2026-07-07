@@ -10,6 +10,14 @@ locals {
   bgp_system_as          = 700
   vxlan_source_interface = "dum240"
 
+  vxlan_peers = {
+    for leaf_name, leaf in merge(var.fabric.leaves, var.fabric.border_leaves, var.fabric.leaves_greatfox) :
+      leaf_name => merge(leaf, {
+    vxlan_loopback = "fd69:255:240::${leaf.id}"
+      })
+    if leaf.id != var.node.id
+  }
+
   l2_vnis = merge([
     for l3_key, l3 in var.vnis.l3 : {
       for l2_key, l2 in try(l3.l2, {}) :
