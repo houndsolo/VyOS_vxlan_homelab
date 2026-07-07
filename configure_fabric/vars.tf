@@ -9,6 +9,7 @@ locals {
 
   vxlan = {
     mtu                       = 9119
+    outer_mtu                       = 9189
     disable_forwarding        = false
     disable_arp_filter        = false
     enable_arp_accept         = false

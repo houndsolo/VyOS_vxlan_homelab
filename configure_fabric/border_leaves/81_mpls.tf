@@ -15,7 +15,7 @@ resource "vyos_interfaces_dummy" "dummy_interface_mpls" {
   address = [
     local.mpls_loopback_v6,
   ]
-  mtu = "9189"
+  mtu         = var.vxlan.outer_mtu
 }
 
 resource "vyos_protocols_mpls" "mpls_interfaces" {

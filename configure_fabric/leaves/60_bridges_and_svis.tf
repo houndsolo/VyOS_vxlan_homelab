@@ -8,7 +8,7 @@ resource "vyos_interfaces_bridge" "vxlan_bridge_L2" {
   ip = {
     enable_arp_accept = true
   }
-  mtu = "9189"
+  mtu         = var.vxlan.outer_mtu
   address = [
     "${each.value.anycast_gw_ip}/${each.value.anycast_gw_cidr}"
   ]
@@ -22,7 +22,7 @@ resource "vyos_interfaces_bridge" "vxlan_bridge_L3" {
   for_each   = var.vnis.l3
   depends_on = [vyos_interfaces_vxlan.vxlan_interfaces_L3]
   identifier = { bridge = "br${each.value.vni}" }
-  mtu        = "9189"
+  mtu         = var.vxlan.outer_mtu
   vrf        = each.value.vrf
 }
 

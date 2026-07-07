@@ -1,12 +1,7 @@
 resource "vyos_interfaces_ethernet" "ext_l3" {
   identifier  = { ethernet = "eth3" }
   description = "ext_l3"
-  mtu         = "9189"
-  address     = [
-  #  "10.250.${local.border_leaf_id_1_2}.1/31"
-    "fd69:255:230::${var.node.id}:1/127"
-  ]
-
+  mtu = var.vxlan.outer_mtu
   lifecycle {
     ignore_changes = [
       hw_id,
@@ -15,74 +10,60 @@ resource "vyos_interfaces_ethernet" "ext_l3" {
   }
 }
 
-
-resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth3" {
-  depends_on = [vyos_interfaces_ethernet.ext_l3]
-  identifier = { interface = "eth3" }
+resource "vyos_interfaces_ethernet_vif" "set_eth3_vif_mtu" {
+  depends_on  = [resource.vyos_interfaces_ethernet.ext_l3]
+  for_each    = var.vnis.l3
+  description = "${each.value.vrf} L3 external connectivity"
+  identifier = {
+    ethernet = "eth3"
+    vif      = each.value.ext_l3_vlan
+  }
+  vrf = each.value.vrf
+  mtu = var.vxlan.outer_mtu
 }
 
-resource "vyos_protocols_bgp_peer_group" "peer_group_FW_l3_out_v6" {
+
+resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth3" {
+  for_each   = var.vnis.l3
+  depends_on = [vyos_interfaces_ethernet_vif.set_eth3_vif_mtu]
+  identifier = { interface = "eth3.${each.value.ext_l3_vlan}" }
+}
+
+
+
+resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
   depends_on = [vyos_vrf_name.create_vrfs]
-  identifier = { peer_group = "FW_L3_out" }
+  for_each   = var.vnis.l3
+  identifier = {
+    peer_group = "FW_L3_out"
+    name       = each.value.vrf
+  }
   capability = {
     dynamic          = true
     extended_nexthop = true
   }
-  remote_as     = local.ext_l3_asn
-  ebgp_multihop = 20
-  update_source = "dum240"
+  remote_as = local.ext_l3_asn
   address_family = {
-    #ipv4_unicast = {
-    #  soft_reconfiguration = { inbound = true }
-    #}
-    #ipv4_vpn = {
-    #  soft_reconfiguration = { inbound = true }
-    #}
-    ipv6_unicast = {
+    ipv4_unicast = {
       soft_reconfiguration = { inbound = true }
     }
+    #ipv6_unicast = {
+    #  soft_reconfiguration = { inbound = true }
+    #}
   }
 }
 
-resource "vyos_protocols_bgp_neighbor" "bgp_extl3_neighbors" {
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_FW_l3_out_v6]
-  identifier = { neighbor = "eth3" }
+
+resource "vyos_vrf_name_protocols_bgp_neighbor" "fw_wan_conectivity" {
+  depends_on = [vyos_vrf_name_protocols_bgp_peer_group.peer_group_FW_l3_out]
+  for_each   = var.vnis.l3
+  identifier = {
+    name     = each.value.vrf
+    neighbor = "eth3.${each.value.ext_l3_vlan}"
+  }
   interface = {
     v6only = {
       peer_group = "FW_L3_out"
     }
   }
-}
-
-resource "vyos_protocols_bgp_address_family_ipv4_unicast_redistribute_connected" "redistribute_connected" {
-  depends_on = [vyos_protocols_bgp.enable_bgp]
-}
-
-#resource "vyos_protocols_bgp_neighbor" "ext_l3" {
-#  depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-#  identifier = { neighbor = "10.250.${local.border_leaf_id_1_2}.0" }
-#  peer_group = "FW_L3_out"
-#}
-
-resource "vyos_protocols_bgp_peer_group" "peer_group_FW_l3_vpnv4" {
-  depends_on = [vyos_vrf_name.create_vrfs]
-  identifier = { peer_group = "FW_L3_out_vpnv4" }
-  capability = {
-    dynamic          = true
-    extended_nexthop = true
-  }
-  remote_as     = local.ext_l3_asn
-  ebgp_multihop = 20
-  update_source = "dum240"
-  address_family = {
-    ipv4_vpn = {
-      soft_reconfiguration = { inbound = true }
-    }
-  }
-}
-
-resource "vyos_protocols_bgp_neighbor" "fw_wan_conectivity" {
-  depends_on = [vyos_protocols_bgp_peer_group.peer_group_FW_l3_vpnv4]
-  identifier = { neighbor = local.l3ext_peering_address_remote_v6 }
-  peer_group = "FW_L3_out_vpnv4"
 }

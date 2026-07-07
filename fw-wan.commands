@@ -1,0 +1,29 @@
+set protocols bgp parameters bestpath as-path multipath-relax
+set protocols bgp parameters ebgp-requires-policy
+set protocols bgp parameters router-id '10.20.10.255'
+set protocols bgp system-as '420'
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast export vpn
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast import vpn
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast label vpn export 'auto'
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast rd vpn export '420:1337'
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast redistribute connected
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast route-target vpn export '420:1337'
+set vrf name lylat_lan protocols bgp address-family ipv4-unicast route-target vpn import '420:666 420:4004 420:77 700:6600 700:6200 700:6900'
+set vrf name lylat_lan protocols bgp neighbor 10.255.255.252 address-family ipv4-unicast default-originate
+set vrf name lylat_lan protocols bgp neighbor 10.255.255.252 address-family ipv4-unicast route-map export 'lylat_lan_IN'
+set vrf name lylat_lan protocols bgp neighbor 10.255.255.252 address-family ipv4-unicast route-map import 'lylat_lan_OUT'
+set vrf name lylat_lan protocols bgp neighbor 10.255.255.252 address-family ipv4-unicast soft-reconfiguration inbound
+set vrf name lylat_lan protocols bgp neighbor 10.255.255.252 remote-as '400'
+set vrf name lylat_lan protocols bgp neighbor 10.255.255.252 shutdown
+set vrf name lylat_lan protocols bgp neighbor eth1.69 interface v6only peer-group 'VXLAN_Border_Spine'
+set vrf name lylat_lan protocols bgp neighbor eth2.69 interface v6only peer-group 'VXLAN_Border_Spine'
+set vrf name lylat_lan protocols bgp parameters ebgp-requires-policy
+set vrf name lylat_lan protocols bgp parameters router-id '10.255.10.255'
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine address-family ipv4-unicast default-originate
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine address-family ipv4-unicast route-map export 'border_vtep_in_RM'
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine address-family ipv4-unicast route-map import 'TESTallowall'
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine address-family ipv4-unicast soft-reconfiguration inbound
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine capability dynamic
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine capability extended-nexthop
+set vrf name lylat_lan protocols bgp peer-group VXLAN_Border_Spine remote-as '700'
+set vrf name lylat_lan protocols bgp system-as '420'

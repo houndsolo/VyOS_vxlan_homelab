@@ -49,6 +49,7 @@ variable "node" {
 variable "vxlan" {
   type = object({
     mtu                       = number
+    outer_mtu                       = number
     disable_forwarding        = bool
     disable_arp_filter        = bool
     enable_arp_accept         = bool

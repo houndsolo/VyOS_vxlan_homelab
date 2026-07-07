@@ -4,14 +4,14 @@ resource "vyos_interfaces_dummy" "dummy_interface" {
     local.vxlan_loopback,
     local.vxlan_loopback_v6
   ]
-  mtu = "9189"
+  mtu         = var.vxlan.outer_mtu
 }
 
 resource "vyos_interfaces_ethernet" "link_to_spines" {
   for_each   = var.fabric.spines
   identifier  = { ethernet = each.value.uplink_if }
   description = "p2p-spine-${each.value.id}"
-  mtu         = "9189"
+  mtu         = var.vxlan.outer_mtu
 
   lifecycle {
     ignore_changes = [
