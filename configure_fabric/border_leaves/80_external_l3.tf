@@ -4,7 +4,7 @@ resource "vyos_interfaces_ethernet" "ext_l3" {
   mtu         = "9189"
   address     = [
   #  "10.250.${local.border_leaf_id_1_2}.1/31"
-    #"fd69:255:230::${var.node.id}:1/127"
+    "fd69:255:230::${var.node.id}:1/127"
   ]
 
   lifecycle {

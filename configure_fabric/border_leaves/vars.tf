@@ -4,7 +4,7 @@ locals {
   hostname          = "BORDER-LEAF-${var.node.id}"
 
   l3ext_peering_address_remote = "10.255.240.255"
-  l3ext_peering_address_remote_v6 = "fd69:420::255"
+  l3ext_peering_address_remote_v6 = "fd69:255:240::255"
   ext_l3_asn                   = 420
 
   vxlan_loopback         = "${local.vxlan_loopback_net}/32"
