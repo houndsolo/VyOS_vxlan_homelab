@@ -4,18 +4,19 @@ OpenTofu/Terraform automation for building and configuring a VyOS/FRR EVPN-VXLAN
 
 This repository is focused on a lab fabric with VyOS VTEP leaves, MikroTik CRS326 spine/route-reflector nodes, Proxmox-hosted VyOS VMs, border leaves, VRFs, L2VNIs, L3VNIs, and EVPN route-target based segmentation.
 
-> This is a homelab-specific working repo. Expect hard-coded lab addressing, node names, and provider endpoints unless you refactor the variables for your own environment.
 
 ## What this builds
 
 At the top level, the repo calls two modules:
 
-- `configure_fabric` — configures VyOS fabric nodes.
 - `create_fabric_vms` — creates VyOS VTEP VMs on Proxmox.
+- `configure_fabric` — configures VyOS fabric nodes.
+
 
 The current fabric model includes:
 
-- Two spine nodes.
+- Two Mikrotik CRS 326 spines. (need to add config). Spines are dumb and ezpz
+    - requires ROS 7.24.1 or greater due to EVPN RR bug
 - Standard leaf VTEP nodes.
 - Border leaf nodes.
 - Optional fabric-extension leaves.
@@ -160,55 +161,10 @@ https://10.20.7.20:8006  # greatfox alias
 
 ## Required secrets
 
-Do not commit real secrets. Provide these through environment variables, a local untracked `.auto.tfvars` file, or your preferred secret workflow:
-
-```bash
-export TF_VAR_vyos_key='...'
-export TF_VAR_pve_api_token='...'
-export TF_VAR_gf_api_token='...'
-```
-
-Variables used by the modules include:
-
 - `vyos_key` — VyOS HTTPS API key.
 - `pve_api_token` — Proxmox API token for the primary cluster.
 - `gf_api_token` — Proxmox API token for the `greatfox` target.
 
-## Usage
-
-Clone the repo:
-
-```bash
-git clone https://github.com/houndsolo/VyOS_vxlan_homelab.git
-cd VyOS_vxlan_homelab
-```
-
-Initialize providers:
-
-```bash
-tofu init
-```
-
-Format and validate:
-
-```bash
-tofu fmt -recursive
-tofu validate
-```
-
-Review the planned changes:
-
-```bash
-tofu plan
-```
-
-Apply changes:
-
-```bash
-tofu apply
-```
-
-Equivalent `terraform` commands should also work if your provider installation matches this repo.
 
 ## Customizing the lab
 
@@ -226,7 +182,7 @@ fabric = {
 }
 ```
 
-Edit the `vnis.l3` object to add or remove VRFs, L3VNIs, route-targets, external VLANs, and nested L2VNIs.
+Edit the `vnis.l3` object to add or remove VRFs, L3VNIs, route-targets, external L3 vlan, and nested L2VNIs.
 
 Each L2VNI can define:
 
@@ -256,12 +212,12 @@ On VyOS/FRR leaves:
 
 ```bash
 show bgp summary
+show bgp ipv4 vpn
+show bgp vrf lylat_lan ipv4
 show bgp l2vpn evpn summary
 show bgp l2vpn evpn route
-show interface vxlan
-show bridge
-show vrf
 show ip route vrf all
+monitor traffic interface any filter 'port not 22'
 ```
 
 On MikroTik spines:
