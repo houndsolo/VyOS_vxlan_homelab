@@ -32,7 +32,10 @@ resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth3" {
 
 
 resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
-  depends_on = [vyos_vrf_name.create_vrfs]
+  depends_on = [
+    vyos_vrf_name.create_vrfs,
+    vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
+  ]
   for_each   = var.vnis.l3
   identifier = {
     peer_group = "FW_L3_out"
