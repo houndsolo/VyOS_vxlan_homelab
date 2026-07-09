@@ -1,6 +1,6 @@
 # VyOS VXLAN Homelab
 
-OpenTofu/Terraform automation for building and configuring a VyOS/FRR EVPN-VXLAN homelab fabric.
+OpenTofu automation for building and configuring a VyOS/FRR EVPN-VXLAN homelab fabric.
 
 This repository is focused on a lab fabric with VyOS VTEP leaves, MikroTik CRS326 spine/route-reflector nodes, Proxmox-hosted VyOS VMs, border leaves, VRFs, L2VNIs, L3VNIs, and EVPN route-target based segmentation.
 
@@ -202,7 +202,6 @@ This repo assumes:
 - VyOS API keys already exist.
 - Proxmox API tokens already exist.
 - SSH access to Proxmox uses `root` and `~/.ssh/id_rsa`.
-- The local Proxmox provider source `local/mechanic/proxmox` is available to OpenTofu/Terraform.
 - The lab uses ULA IPv6 VTEP/overlay addressing under `fd69:255:240::/64`.
 - MikroTik spines handle EVPN route-reflection outside this repo.
 
