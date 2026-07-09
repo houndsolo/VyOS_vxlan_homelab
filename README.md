@@ -231,5 +231,6 @@ On MikroTik spines:
 ## Status
 
 Current direction: MikroTik spines are used as EVPN route reflectors, and VyOS leaves peer EVPN overlay to the spine IPv6 loopbacks.
-
-Older MPLS/VPNv4 experiments appear to have been removed or disabled in favor of the current EVPN-focused workflow.
+External L3 connectivity is only working via:
+- ipv4-unicast per vrf peering, ipv6 LL
+- ipv4-vpn with ipv4 p2p + MPLS/LDPv4/OSPF underlay thru P router.
