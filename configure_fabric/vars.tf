@@ -35,12 +35,14 @@ variable "fabric" {
       nolearning                = bool
       vni_filter                = bool
     })
+
     evpn_rr = optional(map(object({
       id               = number
       hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     })), {})
+
     spines = map(object({
       id              = number
       uplink_if       = optional(string, null)
@@ -53,18 +55,21 @@ variable "fabric" {
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))
+
     fabric_ext_leaves = map(object({
       id               = number
       hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))
+
     border_leaves = map(object({
       id               = number
       hypervisor_node  = optional(string, null)
       is_vm            = optional(bool, true)
       underlay_bridges = optional(list(string), null)
     }))
+
     leaves_greatfox = map(object({
       id               = number
       hypervisor_node  = optional(string, null)
@@ -87,8 +92,8 @@ locals {
       underlay_local_as      = var.fabric.defaults.underlay_local_as_base + node_id
       vxlan_loopback_net     = cidrhost(var.fabric.defaults.ipv4_loopback_prefix, node_id)
       vxlan_loopback         = "${cidrhost(var.fabric.defaults.ipv4_loopback_prefix, node_id)}/32"
-      vxlan_loopback_v6_net  = cidrhost(var.fabric.defaults.ipv6_underlay_prefix, node_id)
-      vxlan_loopback_v6      = "${cidrhost(var.fabric.defaults.ipv6_underlay_prefix, node_id)}/128"
+      vxlan_loopback_v6_net  = cidrhost(var.fabric.defaults.ipv6_underlay_prefix, parseint(tostring(node_id),16))
+      vxlan_loopback_v6      = "${cidrhost(var.fabric.defaults.ipv6_underlay_prefix, parseint(tostring(node_id),16))}/128"
       bgp_system_as          = var.fabric.defaults.bgp_system_as
       vxlan_source_interface = var.fabric.defaults.vxlan_source_interface
     }
