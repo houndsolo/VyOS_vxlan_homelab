@@ -96,8 +96,8 @@ vnis = {
       ipv4_rt_imports = "700:6600"
       ipv4_rt_exports = "700:6200"
 
-      BL_ipv4_rt_imports = "420:666 420:77"
-      BL_ipv4_rt_exports = "700:6200"
+      border_leaf_ipv4_rt_imports = "420:666 420:77"
+      border_leaf_ipv4_rt_exports = "700:6200"
 
       export_vpn_ipv4 = true
       evpn_rt_imports = [
@@ -142,8 +142,8 @@ vnis = {
       ipv4_rt_imports = "700:6200 700:6900"
       ipv4_rt_exports = "700:6600"
 
-      BL_ipv4_rt_imports = "420:1337 420:666"
-      BL_ipv4_rt_exports = "700:6600"
+      border_leaf_ipv4_rt_imports = "420:1337 420:666"
+      border_leaf_ipv4_rt_exports = "700:6600"
 
       export_vpn_ipv4 = true
       evpn_rt_imports = [
@@ -189,8 +189,8 @@ vnis = {
       ipv4_rt_imports = "700:6600"
       ipv4_rt_exports = "700:6900"
 
-      BL_ipv4_rt_imports = "420:1337 420:666"
-      BL_ipv4_rt_exports = "700:6900"
+      border_leaf_ipv4_rt_imports = "420:1337 420:666"
+      border_leaf_ipv4_rt_exports = "700:6900"
 
       export_vpn_ipv4 = true
       redistribute_ipv4 = {

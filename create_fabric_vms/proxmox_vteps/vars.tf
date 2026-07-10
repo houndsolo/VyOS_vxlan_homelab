@@ -4,9 +4,8 @@ locals {
   vxlan_mgmt_ip_sub = "${local.vxlan_mgmt_ip}/${local.vxlan_mgmt_cidr}"
 
   vtep_vm_id = "9700${var.host_node.id}"
-  vtep_id    = var.host_node.id - 10
 
-  vm_id = local.vtep_id + 700 + 10
+  vm_id = var.host_node.id + 700
 
   underlay_bridges = coalesce(var.host_node.underlay_bridges, var.vm_config.default_underlay_bridges)
 

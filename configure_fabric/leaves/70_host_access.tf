@@ -2,7 +2,7 @@ resource "vyos_interfaces_ethernet" "link_to_vms" {
   depends_on  = [module.leaf_l2_common]
   identifier  = { ethernet = "eth3" }
   description = "link to vms"
-  mtu         = "9119"
+  mtu         = var.vxlan.mtu
   lifecycle {
     ignore_changes = [
       hw_id,
