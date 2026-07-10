@@ -58,7 +58,11 @@ resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
 
 
 resource "vyos_vrf_name_protocols_bgp_neighbor" "fw_wan_conectivity" {
-  depends_on = [vyos_vrf_name_protocols_bgp_peer_group.peer_group_FW_l3_out]
+  depends_on = [
+    vyos_vrf_name.create_vrfs,
+    vyos_vrf_name_protocols_bgp_peer_group.peer_group_FW_l3_out,
+    vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
+  ]
   for_each   = var.vnis.l3
   identifier = {
     name     = each.value.vrf

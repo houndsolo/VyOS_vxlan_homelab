@@ -1,4 +1,8 @@
 fabric = {
+  evpn_rr = {
+    evpn-rr-1 = { hypervisor_node = "titania", id = 100, is_vm = true }
+    evpn-rr-2 = { hypervisor_node = "fortuna", id = 200, is_vm = true }
+  }
   spines = {
     #mikrotik 326
     rtr1 = { id = 1 , uplink_if = "eth1", v6_peering = "fd69:255:240::1"}
