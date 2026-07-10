@@ -184,3 +184,51 @@ Non-VyOS API change required for anycast gateway
 - [VyOS Issue 2](https://vyos.dev/T7274) - try this fix?
 
 Cannot figure out how to map L3VNI to a SVD. seem to need a separate VXLAN device to defiine L3VNI.
+
+---
+
+## OpenTofu Module Layout
+
+The leaf fabric configuration is split so normal leaves and border leaves share one implementation for the common base fabric logic and one implementation for the common VXLAN/bridge logic, while keeping role-specific and border-leaf-specific VRF/BGP policy separate:
+
+```text
+configure_fabric/
+  leaf_common/      # shared system, underlay, BGP underlay, and EVPN overlay config
+  leaf_l2_common/   # shared VXLAN interfaces, bridges, and SVIs
+  leaves/           # normal leaf wrapper, normal leaf VRF/L3VNI policy, and host/VM access on eth3
+  border_leaves/    # border leaf wrapper, BL-specific VRF/L3VNI policy, and external L3 connectivity
+```
+
+`leaf_common` owns the common resources for system settings, underlay interfaces, BGP underlay, and the BGP EVPN overlay. Both `leaves` and `border_leaves` instantiate this shared module first.
+
+`leaves/40_vrf_l3vni.tf` and `border_leaves/40_vrf_l3vni.tf` intentionally remain separate because border leaves have different VRF policy and BGP settings than normal leaves.
+
+`leaf_l2_common` owns the shared VXLAN interfaces, bridges, and SVIs. Both role wrappers instantiate it after their role-specific `40_vrf_l3vni.tf` resources, so the shared L2/VXLAN resources can still be reused without forcing normal leaves and border leaves to share incompatible VRF/BGP policy.
+
+Normal leaves keep host/VM access resources in `configure_fabric/leaves/70_host_access.tf`, including the VM-facing Ethernet interface, VLAN subinterfaces, and bridge membership.
+
+Border leaves keep external L3 resources in `configure_fabric/border_leaves/80_external_l3.tf`, including the external Ethernet interface, VRF VIFs, router advertisements, and per-VRF BGP neighbors/peer groups from `external_l3`.
+
+Normal leaves and border leaves still share the same base BGP/EVPN underlay/overlay implementation and the same VXLAN/L2VNI bridge/SVI implementation, while preserving unique VRF/L3VNI policy where border leaves differ.
+
+### Refactor and state notes
+
+This refactor intentionally changes OpenTofu resource addresses for shared resources because they moved under nested shared modules inside both role wrappers. For example, a former address like:
+
+```text
+module.leaf_vms["node"].vyos_protocols_bgp.enable_bgp
+```
+
+is now under:
+
+```text
+module.leaf_vms["node"].module.leaf_common.vyos_protocols_bgp.enable_bgp
+```
+
+and shared VXLAN/bridge resources are now under:
+
+```text
+module.leaf_vms["node"].module.leaf_l2_common.vyos_interfaces_vxlan.vxlan_interfaces_L2
+```
+
+Border-leaf shared resources follow the same pattern under `module.border_leaves[*].module.leaf_common` and `module.border_leaves[*].module.leaf_l2_common`. The `40_vrf_l3vni.tf` resources remain directly in the role modules so normal leaf and border-leaf VRF/BGP policy can stay different. If preserving an existing state file matters, use `tofu state mv` for moved shared resources or recreate the lab state from scratch.

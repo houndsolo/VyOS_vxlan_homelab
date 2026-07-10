@@ -1,5 +1,4 @@
 resource "vyos_interfaces_vxlan" "vxlan_interfaces_L2" {
-  #  depends_on       = [vyos_protocols_bgp_neighbor.bgp_underlay_neighbors_sw2]
   for_each         = var.l2_vnis
   identifier       = { vxlan = "vxlan${each.value.vni}" }
   source_interface = var.node.vxlan_source_interface
@@ -27,7 +26,6 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L2" {
 }
 
 resource "vyos_interfaces_vxlan" "vxlan_interfaces_L3" {
-  depends_on       = [vyos_vrf_name.create_vrfs]
   for_each         = var.vnis.l3
   identifier       = { vxlan = "vxlan${each.value.vni}" }
   description      = "Layer 3 for ${each.value.vrf} vrf"

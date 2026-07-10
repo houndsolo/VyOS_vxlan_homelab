@@ -58,7 +58,7 @@ resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors" {
 }
 
 
-resource "vyos_protocols_bgp_address_family_ipv6_unicast_redistribute_connected" "redistribute_loopbacks" {
+resource "vyos_protocols_bgp_address_family_ipv6_unicast_network" "redistribute_loopback" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
+  identifier = { network = var.node.vxlan_loopback_v6 }
 }
-

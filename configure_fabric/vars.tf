@@ -11,8 +11,8 @@ locals {
       underlay_local_as      = var.fabric.defaults.underlay_local_as_base + node_id
       vxlan_loopback_net     = cidrhost(var.fabric.defaults.ipv4_loopback_prefix, node_id)
       vxlan_loopback         = "${cidrhost(var.fabric.defaults.ipv4_loopback_prefix, node_id)}/32"
-      vxlan_loopback_v6_net  = cidrhost(var.fabric.defaults.ipv6_underlay_prefix, parseint(tostring(node_id),16))
-      vxlan_loopback_v6      = "${cidrhost(var.fabric.defaults.ipv6_underlay_prefix, parseint(tostring(node_id),16))}/128"
+      vxlan_loopback_v6_net  = cidrhost(var.fabric.defaults.ipv6_underlay_prefix, parseint(tostring(node_id), 16))
+      vxlan_loopback_v6      = "${cidrhost(var.fabric.defaults.ipv6_underlay_prefix, parseint(tostring(node_id), 16))}/128"
       bgp_system_as          = var.fabric.defaults.bgp_system_as
       vxlan_source_interface = var.fabric.defaults.vxlan_source_interface
     }

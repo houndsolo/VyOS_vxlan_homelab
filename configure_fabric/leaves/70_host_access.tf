@@ -1,5 +1,5 @@
 resource "vyos_interfaces_ethernet" "link_to_vms" {
-  depends_on  = [vyos_interfaces_ethernet.link_to_spines]
+  depends_on  = [module.leaf_l2_common]
   identifier  = { ethernet = "eth3" }
   description = "link to vms"
   mtu         = "9119"
@@ -13,7 +13,7 @@ resource "vyos_interfaces_ethernet" "link_to_vms" {
 
 resource "vyos_interfaces_ethernet_vif" "eth_3_vifs" {
   depends_on = [
-    vyos_vrf_name.create_vrfs
+    module.leaf_l2_common
   ]
   for_each = var.l2_vnis
   identifier = {
@@ -25,7 +25,7 @@ resource "vyos_interfaces_ethernet_vif" "eth_3_vifs" {
 resource "vyos_interfaces_bridge_member_interface" "br0_eth3" {
   depends_on = [
     vyos_interfaces_ethernet_vif.eth_3_vifs,
-    vyos_interfaces_bridge.vxlan_bridge_L2,
+    module.leaf_l2_common,
   ]
 
   for_each = var.l2_vnis

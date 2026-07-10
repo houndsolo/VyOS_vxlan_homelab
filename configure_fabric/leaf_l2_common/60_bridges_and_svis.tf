@@ -1,9 +1,6 @@
 resource "vyos_interfaces_bridge" "vxlan_bridge_L2" {
-  for_each = var.l2_vnis
-  depends_on = [
-    vyos_vrf_name.create_vrfs,
-    vyos_interfaces_vxlan.vxlan_interfaces_L3
-  ]
+  for_each   = var.l2_vnis
+  depends_on = [vyos_interfaces_vxlan.vxlan_interfaces_L3]
   identifier = { bridge = "br${each.value.vni}" }
   ip = {
     enable_arp_accept = true

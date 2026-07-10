@@ -33,7 +33,7 @@ resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth3" {
 
 resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
   depends_on = [
-    vyos_vrf_name.create_vrfs,
+    module.leaf_l2_common,
     vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
   ]
   for_each = var.vnis.l3
@@ -59,7 +59,7 @@ resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
 
 resource "vyos_vrf_name_protocols_bgp_neighbor" "fw_wan_conectivity" {
   depends_on = [
-    vyos_vrf_name.create_vrfs,
+    module.leaf_l2_common,
     vyos_vrf_name_protocols_bgp_peer_group.peer_group_FW_l3_out,
     vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
   ]
