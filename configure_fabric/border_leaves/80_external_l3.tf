@@ -63,7 +63,7 @@ resource "vyos_vrf_name_protocols_bgp_neighbor" "fw_wan_conectivity" {
     vyos_vrf_name_protocols_bgp_peer_group.peer_group_FW_l3_out,
     vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
   ]
-  for_each   = var.vnis.l3
+  for_each = var.vnis.l3
   identifier = {
     name     = each.value.vrf
     neighbor = "${var.external_l3.interface}.${each.value.ext_l3_vlan}"

@@ -1,9 +1,9 @@
 resource "vyos_interfaces_vxlan" "vxlan_interfaces_L2" {
   #  depends_on       = [vyos_protocols_bgp_neighbor.bgp_underlay_neighbors_sw2]
-  for_each         = local.l2_vnis
+  for_each         = var.l2_vnis
   identifier       = { vxlan = "vxlan${each.value.vni}" }
-  source_interface = local.vxlan_source_interface
-  source_address   = local.vxlan_loopback_v6_net
+  source_interface = var.node.vxlan_source_interface
+  source_address   = var.node.vxlan_loopback_v6_net
   mtu              = var.vxlan.mtu
   ip = {
     disable_arp_filter        = var.vxlan.disable_arp_filter
@@ -31,8 +31,8 @@ resource "vyos_interfaces_vxlan" "vxlan_interfaces_L3" {
   for_each         = var.vnis.l3
   identifier       = { vxlan = "vxlan${each.value.vni}" }
   description      = "Layer 3 for ${each.value.vrf} vrf"
-  source_interface = local.vxlan_source_interface
-  source_address   = local.vxlan_loopback_v6_net
+  source_interface = var.node.vxlan_source_interface
+  source_address   = var.node.vxlan_loopback_v6_net
   mtu              = var.vxlan.mtu
   ip = {
     disable_arp_filter        = var.vxlan.disable_arp_filter

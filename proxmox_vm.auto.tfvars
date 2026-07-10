@@ -10,3 +10,11 @@ proxmox_vtep_vm = {
   memory_mb                = 4096
   disk_size_gb             = 10
 }
+
+dns = {
+  #name_servers  = ["10.8.6.9"]
+  name_servers  = ["1.1.1.1"]
+  domain_name   = "lylat.space"
+  domain_search = ["lylat.space"]
+}
+

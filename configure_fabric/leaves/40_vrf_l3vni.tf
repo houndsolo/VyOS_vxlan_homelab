@@ -1,20 +1,6 @@
-locals {
-  ipv4_vpn_export_policy = {
-    for l3_key, l3 in var.vnis.l3 :
-    l3_key => {
-      prefix_list_name = "PL-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
-      route_map_name   = "RM-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
-    }
-    if length([
-      for l2_key, l2 in l3.l2 :
-      l2_key
-      if try(l2.export_ipv4_unicast, false)
-    ]) > 0
-  }
-}
 
 resource "vyos_policy_prefix_list" "create_prefix_list" {
-  for_each = local.ipv4_vpn_export_policy
+  for_each = var.ipv4_vpn_export_policy
 
   identifier = {
     prefix_list = each.value.prefix_list_name
@@ -37,7 +23,7 @@ resource "vyos_policy_prefix_list_rule" "ipv4_vpn_export_prefix_rules" {
   ]...)
 
   identifier = {
-    prefix_list = local.ipv4_vpn_export_policy[each.value.l3_key].prefix_list_name
+    prefix_list = var.ipv4_vpn_export_policy[each.value.l3_key].prefix_list_name
     rule        = each.value.rule
   }
 
@@ -46,7 +32,7 @@ resource "vyos_policy_prefix_list_rule" "ipv4_vpn_export_prefix_rules" {
 }
 
 resource "vyos_policy_route_map" "create_route_map" {
-  for_each = local.ipv4_vpn_export_policy
+  for_each = var.ipv4_vpn_export_policy
 
   identifier = {
     route_map = each.value.route_map_name
@@ -55,7 +41,7 @@ resource "vyos_policy_route_map" "create_route_map" {
 
 resource "vyos_policy_route_map_rule" "ipv4_vpn_export_permit" {
   depends_on = [resource.vyos_policy_route_map.create_route_map]
-  for_each   = local.ipv4_vpn_export_policy
+  for_each   = var.ipv4_vpn_export_policy
 
   identifier = {
     route_map = each.value.route_map_name
@@ -74,7 +60,7 @@ resource "vyos_policy_route_map_rule" "ipv4_vpn_export_permit" {
 }
 
 resource "vyos_policy_route_map_rule" "ipv4_vpn_export_deny" {
-  for_each = local.ipv4_vpn_export_policy
+  for_each = var.ipv4_vpn_export_policy
 
   identifier = {
     route_map = each.value.route_map_name
@@ -95,10 +81,10 @@ resource "vyos_vrf_name" "create_vrfs" {
 
   protocols = {
     bgp = {
-      system_as = local.bgp_system_as
+      system_as = var.node.bgp_system_as
 
       parameters = {
-        router_id = local.vxlan_loopback_net
+        router_id = var.node.vxlan_loopback_net
 
         bestpath = {
           as_path = { multipath_relax = true }
@@ -113,7 +99,7 @@ resource "vyos_vrf_name" "create_vrfs" {
 
             rd = {
               vpn = {
-                export = "${local.vxlan_loopback_net}:${each.value.vni}"
+                export = "${var.node.vxlan_loopback_net}:${each.value.vni}"
               }
             }
 
@@ -129,17 +115,17 @@ resource "vyos_vrf_name" "create_vrfs" {
           each.value.redistribute_ipv4 != null ? {
             redistribute = each.value.redistribute_ipv4
           } : {},
-          contains(keys(local.ipv4_vpn_export_policy), each.key) ? {
+          contains(keys(var.ipv4_vpn_export_policy), each.key) ? {
             route_map = {
               vpn = {
-                export = local.ipv4_vpn_export_policy[each.key].route_map_name
+                export = var.ipv4_vpn_export_policy[each.key].route_map_name
               }
             }
           } : {}
         )
 
         l2vpn_evpn = {
-          rd = "${local.vxlan_loopback_net}:${each.value.vni}"
+          rd = "${var.node.vxlan_loopback_net}:${each.value.vni}"
 
           route_target = {
             import = each.value.evpn_rt_imports

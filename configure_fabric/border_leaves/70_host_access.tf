@@ -15,7 +15,7 @@
 #  depends_on = [
 #    vyos_vrf_name.create_vrfs
 #  ]
-#  for_each = local.l2_vnis
+#  for_each = var.l2_vnis
 #  identifier = {
 #    ethernet = "eth3"
 #    vif = each.value.vlan_id
@@ -28,7 +28,7 @@
 #    vyos_interfaces_bridge.vxlan_bridge_L2,
 #  ]
 #
-#  for_each = local.l2_vnis
+#  for_each = var.l2_vnis
 #  identifier = {
 #    bridge = "br${each.value.vni}"
 #    interface = "eth3.${each.value.l2_key}"

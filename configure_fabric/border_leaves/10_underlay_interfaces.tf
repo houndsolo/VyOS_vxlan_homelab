@@ -1,14 +1,14 @@
 resource "vyos_interfaces_dummy" "dummy_interface" {
-  identifier = { dummy = local.vxlan_source_interface }
+  identifier = { dummy = var.node.vxlan_source_interface }
   address = [
-    local.vxlan_loopback,
-    local.vxlan_loopback_v6
+    var.node.vxlan_loopback,
+    var.node.vxlan_loopback_v6
   ]
-  mtu         = var.vxlan.outer_mtu
+  mtu = var.vxlan.outer_mtu
 }
 
 resource "vyos_interfaces_ethernet" "link_to_spines" {
-  for_each   = var.fabric.spines
+  for_each    = var.spines
   identifier  = { ethernet = each.value.uplink_if }
   description = "p2p-spine-${each.value.id}"
   mtu         = var.vxlan.outer_mtu
@@ -24,6 +24,6 @@ resource "vyos_interfaces_ethernet" "link_to_spines" {
 
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth" {
   depends_on = [vyos_interfaces_ethernet.link_to_spines]
-  for_each   = var.fabric.spines
+  for_each   = var.spines
   identifier = { interface = each.value.uplink_if }
 }

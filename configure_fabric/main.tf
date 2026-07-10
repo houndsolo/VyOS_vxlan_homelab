@@ -3,57 +3,63 @@
 #  for_each  = var.fabric.spines
 #  source    = "./spines"
 #  providers = { vyos = vyos.spines[each.key] }
-#  node      = each.value
+#  node      = local.derived_fabric.leaves[each.key]
 #  dns       = var.dns
 #  fabric    = var.fabric
 #
-#  bgp_l2vpn = local.bgp_l2vpn
+#  bgp_l2vpn = var.fabric.bgp_l2vpn
 #  vnis      = var.vnis
 #
-#  vxlan = local.vxlan
+#  vxlan = var.fabric.vxlan
 #}
 
 module "leaf_vms" {
   for_each  = var.fabric.leaves
   source    = "./leaves"
   providers = { vyos = vyos.leaves[each.key] }
-  node      = each.value
+  node      = local.derived_fabric.leaves[each.key]
   dns       = var.dns
-  fabric    = var.fabric
 
-  bgp_l2vpn = local.bgp_l2vpn
+  bgp_l2vpn = var.fabric.bgp_l2vpn
   vnis      = var.vnis
 
-  vxlan = local.vxlan
+  vxlan                  = var.fabric.vxlan
+  spines                 = local.derived_fabric.spines
+  l2_vnis                = local.l2_vnis
+  ipv4_vpn_export_policy = local.ipv4_vpn_export_policy
 }
 
 module "greatfox_leaf_vms" {
   for_each  = var.fabric.leaves_greatfox
   source    = "./leaves"
   providers = { vyos = vyos.greatfox }
-  node      = each.value
+  node      = local.derived_fabric.leaves_greatfox[each.key]
   dns       = var.dns
-  fabric    = var.fabric
 
-  bgp_l2vpn = local.bgp_l2vpn
+  bgp_l2vpn = var.fabric.bgp_l2vpn
   vnis      = var.vnis
 
-  vxlan = local.vxlan
+  vxlan                  = var.fabric.vxlan
+  spines                 = local.derived_fabric.spines
+  l2_vnis                = local.l2_vnis
+  ipv4_vpn_export_policy = local.ipv4_vpn_export_policy
 }
 
 module "border_leaves" {
   for_each  = var.fabric.border_leaves
   source    = "./border_leaves"
   providers = { vyos = vyos.border_leaves[each.key] }
-  node      = each.value
+  node      = local.derived_fabric.border_leaves[each.key]
   dns       = var.dns
-  fabric    = var.fabric
 
-  bgp_l2vpn   = local.bgp_l2vpn
+  bgp_l2vpn   = var.fabric.bgp_l2vpn
   vnis        = var.vnis
   external_l3 = var.external_l3
 
-  vxlan = local.vxlan
+  vxlan                  = var.fabric.vxlan
+  spines                 = local.derived_fabric.spines
+  l2_vnis                = local.l2_vnis
+  ipv4_vpn_export_policy = local.ipv4_vpn_export_policy
 }
 
 #module "fabric_ext_leaf_vms" {
@@ -64,9 +70,9 @@ module "border_leaves" {
 #  dns       = var.dns
 #  fabric    = var.fabric
 #
-#  bgp_l2vpn = local.bgp_l2vpn
+#  bgp_l2vpn = var.fabric.bgp_l2vpn
 #  vnis      = var.vnis
 #
-#  vxlan = local.vxlan
+#  vxlan = var.fabric.vxlan
 #}
 #

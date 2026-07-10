@@ -4,12 +4,12 @@ resource "vyos_protocols_bgp" "enable_bgp" {
     vyos_interfaces_ethernet.link_to_vms,
     vyos_interfaces_dummy.dummy_interface
   ]
-  system_as = local.bgp_system_as
+  system_as = var.node.bgp_system_as
 }
 
 resource "vyos_protocols_bgp_parameters" "set_router_id" {
   depends_on       = [vyos_protocols_bgp.enable_bgp]
-  router_id        = local.vxlan_loopback_net
+  router_id        = var.node.vxlan_loopback_net
   fast_convergence = true
 }
 
@@ -42,14 +42,14 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
 resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as" {
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
   identifier = {
-    local_as   = local.underlay_local_as
+    local_as   = var.node.underlay_local_as
     peer_group = "spine_underlay"
   }
   no_prepend = { replace_as = true }
 }
 
 resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors" {
-  for_each   = var.fabric.spines
+  for_each   = var.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
   identifier = { neighbor = each.value.uplink_if }
   interface = {
@@ -62,5 +62,5 @@ resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors" {
 
 resource "vyos_protocols_bgp_address_family_ipv6_unicast_network" "redistribute_loopback" {
   depends_on = [vyos_protocols_bgp.enable_bgp]
-  identifier = { network = local.vxlan_loopback_v6}
+  identifier = { network = var.node.vxlan_loopback_v6 }
 }

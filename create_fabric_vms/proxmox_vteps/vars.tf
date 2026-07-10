@@ -1,6 +1,6 @@
 locals {
-  vxlan_mgmt_cidr   = 16
-  vxlan_mgmt_ip     = "10.20.10.${var.host_node.id}"
+  vxlan_mgmt_cidr   = var.fabric_defaults.vyos_mgmt_cidr
+  vxlan_mgmt_ip     = cidrhost(var.fabric_defaults.vyos_mgmt_prefix, var.host_node.id)
   vxlan_mgmt_ip_sub = "${local.vxlan_mgmt_ip}/${local.vxlan_mgmt_cidr}"
 
   vtep_vm_id = "9700${var.host_node.id}"
@@ -23,6 +23,14 @@ variable "host_node" {
     id               = number
     is_vm            = optional(bool, true)
     underlay_bridges = optional(list(string), null)
+  })
+}
+
+variable "fabric_defaults" {
+  description = "Shared fabric-wide defaults used to derive VM management addressing."
+  type = object({
+    vyos_mgmt_prefix = string
+    vyos_mgmt_cidr   = number
   })
 }
 

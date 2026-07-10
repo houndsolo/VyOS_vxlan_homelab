@@ -1,50 +1,75 @@
-locals {
-  l2_svd            = 9000
-  underlay_local_as = 700 + var.node.id
-  hostname          = "LEAF-${var.node.id}"
-
-  vxlan_loopback         = "${local.vxlan_loopback_net}/32"
-  vxlan_loopback_net     = "10.255.240.${var.node.id}"
-  vxlan_loopback_v6      = "${local.vxlan_loopback_v6_net}/128"
-  vxlan_loopback_v6_net  = "fd69:255:240::${var.node.id}"
-  bgp_system_as          = 700
-  vxlan_source_interface = "dum240"
-
-  vxlan_peers = {
-    for leaf_name, leaf in merge(var.fabric.leaves, var.fabric.border_leaves, var.fabric.leaves_greatfox) :
-      leaf_name => merge(leaf, {
-    vxlan_loopback = "fd69:255:240::${leaf.id}"
-      })
-    if leaf.id != var.node.id
-  }
-
-  l2_vnis = merge([
-    for l3_key, l3 in var.vnis.l3 : {
-      for l2_key, l2 in try(l3.l2, {}) :
-      tostring(l2.vni) => merge(l2, {
-        l3_key = l3_key
-        l2_key = l2_key
-
-        l3_vni = l3.vni
-
-        vrf       = l3.vrf
-        vrf_table = l3.vrf_table
-
-        bridge     = "br${local.l2_svd}"
-        bridge_vif = l2.vlan_id
-      })
-    }
-  ]...)
-}
-
 variable "dns" {
+  description = "DNS configuration for the node."
+  type = object({
+    name_servers  = list(string)
+    domain_name   = string
+    domain_search = list(string)
+  })
 }
+
 variable "node" {
+  description = "Leaf node inventory plus fabric-derived settings from configure_fabric."
+  type = object({
+    id                     = number
+    hypervisor_node        = optional(string, null)
+    is_vm                  = optional(bool, true)
+    underlay_bridges       = optional(list(string), null)
+    hostname               = string
+    l2_svd                 = number
+    underlay_local_as      = number
+    vxlan_loopback         = string
+    vxlan_loopback_net     = string
+    vxlan_loopback_v6      = string
+    vxlan_loopback_v6_net  = string
+    bgp_system_as          = number
+    vxlan_source_interface = string
+    border_leaf_id_1_2     = optional(number, null)
+  })
 }
+
+variable "spines" {
+  description = "Spine inventory with overlay peering addresses derived by configure_fabric."
+  type = map(object({
+    id                    = number
+    uplink_if             = string
+    vxlan_loopback_v6_net = string
+    hypervisor_node       = optional(string, null)
+  }))
+}
+
+variable "l2_vnis" {
+  description = "Flattened L2VNI map derived once by configure_fabric."
+  type = map(object({
+    vni                  = number
+    vlan_id              = number
+    anycast_gw_ip        = string
+    anycast_gw_cidr      = number
+    anycast_mac          = string
+    advertise_default_gw = optional(bool, false)
+    advertise_svi_ip     = optional(bool, false)
+    export_ipv4_unicast  = optional(bool, false)
+    l3_key               = string
+    l2_key               = string
+    l3_vni               = number
+    vrf                  = string
+    vrf_table            = number
+    bridge               = string
+    bridge_vif           = number
+  }))
+}
+
+variable "ipv4_vpn_export_policy" {
+  description = "Per-VRF IPv4 VPN export policy names derived once by configure_fabric."
+  type = map(object({
+    prefix_list_name = string
+    route_map_name   = string
+  }))
+}
+
 variable "vxlan" {
   type = object({
     mtu                       = number
-    outer_mtu                       = number
+    outer_mtu                 = number
     disable_forwarding        = bool
     disable_arp_filter        = bool
     enable_arp_accept         = bool
@@ -68,7 +93,6 @@ variable "bgp_l2vpn" {
     rt_auto_derive   = bool
   })
 }
-variable "fabric" {
-}
+
 variable "vnis" {
 }

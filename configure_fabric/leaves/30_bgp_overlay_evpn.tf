@@ -6,10 +6,10 @@ resource "vyos_protocols_bgp_address_family_l2vpn_evpn" "l2vpn_evpn_config" {
 }
 
 resource "vyos_protocols_bgp_address_family_l2vpn_evpn_vni" "l2vni_bgp_global_config" {
-  for_each             = local.l2_vnis
+  for_each             = var.l2_vnis
   depends_on           = [vyos_protocols_bgp_address_family_l2vpn_evpn.l2vpn_evpn_config]
   identifier           = { vni = each.value.vni }
-  rd                   = "${local.vxlan_loopback_net}:${tostring(each.value.vni)}"
+  rd                   = "${var.node.vxlan_loopback_net}:${tostring(each.value.vni)}"
   advertise_default_gw = each.value.advertise_default_gw
   advertise_svi_ip     = each.value.advertise_svi_ip
 }
@@ -24,7 +24,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_overlay" {
   depends_on    = [vyos_protocols_bgp.enable_bgp]
   identifier    = { peer_group = "spine_overlay" }
   remote_as     = "internal"
-  update_source = local.vxlan_source_interface
+  update_source = var.node.vxlan_source_interface
   address_family = {
     l2vpn_evpn = {
       soft_reconfiguration = { inbound = true }
@@ -33,8 +33,8 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_overlay" {
 }
 
 resource "vyos_protocols_bgp_neighbor" "vxlan_peering" {
-  for_each   = var.fabric.spines
+  for_each   = var.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_overlay]
-  identifier = { neighbor = each.value.v6_peering }
+  identifier = { neighbor = each.value.vxlan_loopback_v6_net }
   peer_group = "spine_overlay"
 }

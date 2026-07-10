@@ -13,19 +13,21 @@ locals {
 }
 
 module "create_vyos_vms" {
-  for_each  = local.vm_leaves
-  source    = "./proxmox_vteps"
-  host_node = each.value
-  spines    = length(var.fabric.spines)
-  vm_config = var.proxmox_vtep_vm
+  for_each        = local.vm_leaves
+  source          = "./proxmox_vteps"
+  host_node       = each.value
+  spines          = length(var.fabric.spines)
+  vm_config       = var.proxmox_vtep_vm
+  fabric_defaults = var.fabric.defaults
 }
 
 module "create_vyos_vms_greatfox" {
-  for_each  = local.vm_leaves_greatfox
-  source    = "./proxmox_vteps"
-  host_node = each.value
-  spines    = length(var.fabric.spines)
-  vm_config = var.proxmox_vtep_vm
+  for_each        = local.vm_leaves_greatfox
+  source          = "./proxmox_vteps"
+  host_node       = each.value
+  spines          = length(var.fabric.spines)
+  vm_config       = var.proxmox_vtep_vm
+  fabric_defaults = var.fabric.defaults
 
   providers = {
     proxmox = proxmox.greatfox
