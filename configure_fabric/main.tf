@@ -13,9 +13,9 @@
 #  vxlan = var.fabric.vxlan
 #}
 
-module "leaf_vms" {
+module "pve_leaf_vms" {
   for_each  = var.fabric.leaves
-  source    = "./leaves"
+  source    = "./pve_leaves"
   providers = { vyos = vyos.leaves[each.key] }
   node      = local.derived_fabric.leaves[each.key]
   dns       = var.dns
@@ -31,7 +31,7 @@ module "leaf_vms" {
 
 module "greatfox_leaf_vms" {
   for_each  = var.fabric.leaves_greatfox
-  source    = "./leaves"
+  source    = "./pve_leaves"
   providers = { vyos = vyos.greatfox }
   node      = local.derived_fabric.leaves_greatfox[each.key]
   dns       = var.dns
@@ -64,7 +64,7 @@ module "border_leaves" {
 
 #module "fabric_ext_leaf_vms" {
 #  for_each  = var.fabric.fabric_ext_leaves
-#  source    = "./leaves"
+#  source    = "./pve_leaves"
 #  providers = { vyos = vyos.fabric_leaves[each.key] }
 #  node      = each.value
 #  dns       = var.dns

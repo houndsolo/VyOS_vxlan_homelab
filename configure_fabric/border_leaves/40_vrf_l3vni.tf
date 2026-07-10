@@ -70,7 +70,10 @@ resource "vyos_policy_route_map_rule" "ipv4_vpn_export_deny" {
 }
 
 resource "vyos_vrf_name" "create_vrfs" {
-  depends_on = [module.leaf_common]
+  depends_on = [
+    module.leaf_common,
+    #vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
+  ]
   for_each   = var.vnis.l3
 
   identifier = { name = each.value.vrf }

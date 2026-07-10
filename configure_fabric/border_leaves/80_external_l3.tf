@@ -11,7 +11,10 @@ resource "vyos_interfaces_ethernet" "ext_l3" {
 }
 
 resource "vyos_interfaces_ethernet_vif" "set_eth3_vif_mtu" {
-  depends_on  = [resource.vyos_interfaces_ethernet.ext_l3]
+  depends_on  = [
+    resource.vyos_interfaces_ethernet.ext_l3,
+    resource.vyos_vrf_name.create_vrfs
+  ]
   for_each    = var.vnis.l3
   description = "${each.value.vrf} L3 external connectivity"
   identifier = {

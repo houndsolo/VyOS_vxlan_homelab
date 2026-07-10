@@ -71,11 +71,9 @@ locals {
       prefix_list_name = "PL-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
       route_map_name   = "RM-${upper(replace(l3.vrf, "_", "-"))}-IPV4-VPN-EXPORT"
     }
-    if length([
-      for l2_key, l2 in l3.l2 :
-      l2_key
-      if try(l2.export_ipv4_unicast, false)
-    ]) > 0
+    if anytrue([
+      for l2_key, l2 in l3.l2 : try(l2.export_ipv4_unicast, false)
+    ])
   }
 }
 
