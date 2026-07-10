@@ -9,7 +9,7 @@ locals {
 
   vxlan = {
     mtu                       = 9119
-    outer_mtu                       = 9189
+    outer_mtu                 = 9189
     disable_forwarding        = false
     disable_arp_filter        = false
     enable_arp_accept         = false
@@ -35,7 +35,6 @@ variable "dns" {
     domain_search = list(string)
   })
 }
-
 
 variable "vnis" {
   type = object({
@@ -72,4 +71,13 @@ variable "vnis" {
 variable "vyos_key" {
   type      = string
   sensitive = true
+}
+
+variable "external_l3" {
+  description = "Border-leaf external L3 connectivity settings."
+  type = object({
+    interface       = string
+    peer_group_name = string
+    remote_asn      = number
+  })
 }

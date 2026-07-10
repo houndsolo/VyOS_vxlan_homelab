@@ -3,23 +3,19 @@ locals {
   underlay_local_as = 700 + var.node.id
   hostname          = "BORDER-LEAF-${var.node.id}"
 
-  l3ext_peering_address_remote = "10.255.240.255"
-  l3ext_peering_address_remote_v6 = "fd69:255:240::255"
-  ext_l3_asn                   = 420
-
   vxlan_loopback         = "${local.vxlan_loopback_net}/32"
   vxlan_loopback_net     = "10.255.240.${var.node.id}"
   vxlan_loopback_v6      = "${local.vxlan_loopback_v6_net}/128"
   vxlan_loopback_v6_net  = "fd69:255:240::${var.node.id}"
   bgp_system_as          = 700
-  border_leaf_id_1_2     = var.node.id -17
+  border_leaf_id_1_2     = var.node.id - 17
   vxlan_source_interface = "dum240"
 
   vxlan_peers = {
     for leaf_name, leaf in merge(var.fabric.leaves, var.fabric.border_leaves, var.fabric.leaves_greatfox) :
-      leaf_name => merge(leaf, {
-    vxlan_loopback = "fd69:255:240::${leaf.id}"
-      })
+    leaf_name => merge(leaf, {
+      vxlan_loopback = "fd69:255:240::${leaf.id}"
+    })
     if leaf.id != var.node.id
   }
 
@@ -49,7 +45,7 @@ variable "node" {
 variable "vxlan" {
   type = object({
     mtu                       = number
-    outer_mtu                       = number
+    outer_mtu                 = number
     disable_forwarding        = bool
     disable_arp_filter        = bool
     enable_arp_accept         = bool
@@ -76,4 +72,13 @@ variable "bgp_l2vpn" {
 variable "fabric" {
 }
 variable "vnis" {
+}
+
+variable "external_l3" {
+  description = "Border-leaf external L3 connectivity settings."
+  type = object({
+    interface       = string
+    peer_group_name = string
+    remote_asn      = number
+  })
 }

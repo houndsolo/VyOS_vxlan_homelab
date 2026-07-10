@@ -1,10 +1,10 @@
 variable "fabric" {
   type = object({
     spines = map(object({
-      id = number
-      uplink_if = string
-      v6_peering = string
-      hypervisor_node  = optional(string, null)
+      id              = number
+      uplink_if       = string
+      v6_peering      = string
+      hypervisor_node = optional(string, null)
     }))
 
     leaves = map(object({
@@ -72,5 +72,30 @@ variable "vnis" {
         export_ipv4_unicast  = optional(bool, false)
       })), {})
     }))
+  })
+}
+
+variable "external_l3" {
+  description = "Border-leaf external L3 connectivity settings."
+  type = object({
+    interface       = string
+    peer_group_name = string
+    remote_asn      = number
+  })
+}
+
+variable "proxmox_vtep_vm" {
+  description = "Proxmox VM settings for VyOS VTEP instances."
+  type = object({
+    datastore_id             = string
+    import_image             = string
+    cloud_init_datastore_id  = string
+    user_data_file_id        = string
+    management_bridge        = string
+    default_underlay_bridges = list(string)
+    cpu_cores                = number
+    cpu_type                 = string
+    memory_mb                = number
+    disk_size_gb             = number
   })
 }

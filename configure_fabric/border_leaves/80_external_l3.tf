@@ -1,7 +1,7 @@
 resource "vyos_interfaces_ethernet" "ext_l3" {
-  identifier  = { ethernet = "eth3" }
+  identifier  = { ethernet = var.external_l3.interface }
   description = "ext_l3"
-  mtu = var.vxlan.outer_mtu
+  mtu         = var.vxlan.outer_mtu
   lifecycle {
     ignore_changes = [
       hw_id,
@@ -15,7 +15,7 @@ resource "vyos_interfaces_ethernet_vif" "set_eth3_vif_mtu" {
   for_each    = var.vnis.l3
   description = "${each.value.vrf} L3 external connectivity"
   identifier = {
-    ethernet = "eth3"
+    ethernet = var.external_l3.interface
     vif      = each.value.ext_l3_vlan
   }
   vrf = each.value.vrf
@@ -26,7 +26,7 @@ resource "vyos_interfaces_ethernet_vif" "set_eth3_vif_mtu" {
 resource "vyos_service_router_advert_interface" "enable_ipv6_ra_underlay_eth3" {
   for_each   = var.vnis.l3
   depends_on = [vyos_interfaces_ethernet_vif.set_eth3_vif_mtu]
-  identifier = { interface = "eth3.${each.value.ext_l3_vlan}" }
+  identifier = { interface = "${var.external_l3.interface}.${each.value.ext_l3_vlan}" }
 }
 
 
@@ -36,16 +36,16 @@ resource "vyos_vrf_name_protocols_bgp_peer_group" "peer_group_FW_l3_out" {
     vyos_vrf_name.create_vrfs,
     vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
   ]
-  for_each   = var.vnis.l3
+  for_each = var.vnis.l3
   identifier = {
-    peer_group = "FW_L3_out"
+    peer_group = var.external_l3.peer_group_name
     name       = each.value.vrf
   }
   capability = {
     dynamic          = true
     extended_nexthop = true
   }
-  remote_as = local.ext_l3_asn
+  remote_as = var.external_l3.remote_asn
   address_family = {
     ipv4_unicast = {
       soft_reconfiguration = { inbound = true }
@@ -62,11 +62,11 @@ resource "vyos_vrf_name_protocols_bgp_neighbor" "fw_wan_conectivity" {
   for_each   = var.vnis.l3
   identifier = {
     name     = each.value.vrf
-    neighbor = "eth3.${each.value.ext_l3_vlan}"
+    neighbor = "${var.external_l3.interface}.${each.value.ext_l3_vlan}"
   }
   interface = {
     v6only = {
-      peer_group = "FW_L3_out"
+      peer_group = var.external_l3.peer_group_name
     }
   }
 }

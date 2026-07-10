@@ -17,6 +17,7 @@ module "create_vyos_vms" {
   source    = "./proxmox_vteps"
   host_node = each.value
   spines    = length(var.fabric.spines)
+  vm_config = var.proxmox_vtep_vm
 }
 
 module "create_vyos_vms_greatfox" {
@@ -24,6 +25,7 @@ module "create_vyos_vms_greatfox" {
   source    = "./proxmox_vteps"
   host_node = each.value
   spines    = length(var.fabric.spines)
+  vm_config = var.proxmox_vtep_vm
 
   providers = {
     proxmox = proxmox.greatfox

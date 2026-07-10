@@ -8,13 +8,8 @@ locals {
 
   vm_id = local.vtep_id + 700 + 10
 
-  underlay_bridges = coalesce(var.host_node.underlay_bridges, ["vmbr4001", "vmbr4002", "vmbr4000"])
+  underlay_bridges = coalesce(var.host_node.underlay_bridges, var.vm_config.default_underlay_bridges)
 
-}
-
-variable "vtep_count" {
-  type    = number
-  default = 6
 }
 
 variable "spines" {
@@ -28,5 +23,21 @@ variable "host_node" {
     id               = number
     is_vm            = optional(bool, true)
     underlay_bridges = optional(list(string), null)
+  })
+}
+
+variable "vm_config" {
+  description = "Proxmox VM settings for this VyOS VTEP instance."
+  type = object({
+    datastore_id             = string
+    import_image             = string
+    cloud_init_datastore_id  = string
+    user_data_file_id        = string
+    management_bridge        = string
+    default_underlay_bridges = list(string)
+    cpu_cores                = number
+    cpu_type                 = string
+    memory_mb                = number
+    disk_size_gb             = number
   })
 }

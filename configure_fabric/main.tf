@@ -49,8 +49,9 @@ module "border_leaves" {
   dns       = var.dns
   fabric    = var.fabric
 
-  bgp_l2vpn = local.bgp_l2vpn
-  vnis      = var.vnis
+  bgp_l2vpn   = local.bgp_l2vpn
+  vnis        = var.vnis
+  external_l3 = var.external_l3
 
   vxlan = local.vxlan
 }

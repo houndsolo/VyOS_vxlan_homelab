@@ -9,7 +9,6 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
   reboot          = false
   stop_on_destroy = true
 
-
   node_name = var.host_node.hypervisor_node
   vm_id     = local.vm_id
 
@@ -22,18 +21,17 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
   ]
 
   disk {
-    datastore_id = "ceph_rbd"
-    import_from  = "cephfs:import/vyos-1.5-rolling-202607050926-qcow2-amd64.qcow2"
-    #import_from  = "cephfs:import/vyos-1.5-rolling-202606080213-qcow2-amd64.qcow2"
+    datastore_id = var.vm_config.datastore_id
+    import_from  = var.vm_config.import_image
     interface    = "virtio0"
     iothread     = true
-    size         = 10
+    size         = var.vm_config.disk_size_gb
   }
 
   initialization {
     interface         = "scsi0"
-    datastore_id      = "ceph_rbd"
-    user_data_file_id = "cephfs:snippets/vyos_api.yml"
+    datastore_id      = var.vm_config.cloud_init_datastore_id
+    user_data_file_id = var.vm_config.user_data_file_id
     ip_config {
       ipv4 {
         address = local.vxlan_mgmt_ip_sub
@@ -41,11 +39,9 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
     }
   }
 
-
-
   network_device {
     disconnected = false
-    bridge       = "vmbr0"
+    bridge       = var.vm_config.management_bridge
     model        = "virtio"
   }
 
@@ -59,23 +55,22 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
     }
   }
 
-
   serial_device {}
 
   cpu {
     #  architecture = "x86_64"
-    cores      = 4
+    cores      = var.vm_config.cpu_cores
     flags      = []
     hotplugged = 0
     limit      = 0
     numa       = false
     sockets    = 1
-    type       = "x86-64-v2-AES"
+    type       = var.vm_config.cpu_type
     units      = 1024
   }
 
   memory {
-    dedicated      = 4096
+    dedicated      = var.vm_config.memory_mb
     floating       = 0
     keep_hugepages = false
     shared         = 0
@@ -97,7 +92,6 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
   timeout_shutdown_vm = 1800
   timeout_start_vm    = 1800
   timeout_stop_vm     = 300
-
 
   lifecycle {
     ignore_changes = [
