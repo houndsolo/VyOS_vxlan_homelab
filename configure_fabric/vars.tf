@@ -1,12 +1,13 @@
 locals {
-  derived_node_defaults = {
+ derived_node_defaults = {
     for node_id in distinct(concat(
       [for node in values(var.fabric.spines) : node.id],
       [for node in values(var.fabric.leaves) : node.id],
       [for node in values(var.fabric.leaves_greatfox) : node.id],
       [for node in values(var.fabric.border_leaves) : node.id],
+      [for node in values(var.fabric.fabric_ext_leaves) : node.id],
     )) :
-    node_id => {
+    tostring(node_id) => {
       l2_svd                 = var.fabric.defaults.l2_service_bridge_id
       underlay_local_as      = var.fabric.defaults.underlay_local_as_base + node_id
       vxlan_loopback_net     = cidrhost(var.fabric.defaults.ipv4_loopback_prefix, node_id)
@@ -21,28 +22,35 @@ locals {
   derived_fabric = {
     spines = {
       for node_name, node in var.fabric.spines :
-      node_name => merge(node, local.derived_node_defaults[node.id])
+      node_name => merge(node, local.derived_node_defaults[tostring(node.id)])
     }
 
     leaves = {
       for node_name, node in var.fabric.leaves :
-      node_name => merge(node, local.derived_node_defaults[node.id], {
+      node_name => merge(node, local.derived_node_defaults[tostring(node.id)], {
         hostname = "LEAF-${node.id}"
       })
     }
 
     leaves_greatfox = {
       for node_name, node in var.fabric.leaves_greatfox :
-      node_name => merge(node, local.derived_node_defaults[node.id], {
+      node_name => merge(node, local.derived_node_defaults[tostring(node.id)], {
         hostname = "LEAF-${node.id}"
       })
     }
 
     border_leaves = {
       for node_name, node in var.fabric.border_leaves :
-      node_name => merge(node, local.derived_node_defaults[node.id], {
+      node_name => merge(node, local.derived_node_defaults[tostring(node.id)], {
         hostname           = "BORDER-LEAF-${node.id}"
         border_leaf_id_1_2 = node.id - 17
+      })
+    }
+
+    fabric_leaves = {
+      for node_name, node in var.fabric.fabric_ext_leaves :
+      node_name => merge(node, local.derived_node_defaults[tostring(node.id)], {
+        hostname = "FABRIC-LEAF-${node.id}"
       })
     }
   }
