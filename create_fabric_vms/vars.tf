@@ -48,28 +48,32 @@ variable "fabric" {
     }))
 
     leaves = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
     fabric_ext_leaves = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
     border_leaves = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
     leaves_greatfox = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
   })
 }

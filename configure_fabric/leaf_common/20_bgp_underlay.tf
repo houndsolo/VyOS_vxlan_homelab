@@ -49,7 +49,7 @@ resource "vyos_protocols_bgp_peer_group_local_as" "peer_group_underlay_local_as"
 resource "vyos_protocols_bgp_neighbor" "bgp_underlay_neighbors" {
   for_each   = var.spines
   depends_on = [vyos_protocols_bgp_peer_group.peer_group_spine_underlay]
-  identifier = { neighbor = each.value.uplink_if }
+  identifier = { neighbor = local.underlay_peer_interfaces[each.key] }
   interface = {
     v6only = {
       peer_group = "spine_underlay"

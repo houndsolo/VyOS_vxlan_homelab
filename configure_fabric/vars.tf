@@ -1,5 +1,5 @@
 locals {
- derived_node_defaults = {
+  derived_node_defaults = {
     for node_id in distinct(concat(
       [for node in values(var.fabric.spines) : node.id],
       [for node in values(var.fabric.leaves) : node.id],
@@ -137,31 +137,35 @@ variable "fabric" {
     }))
 
     leaves = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
 
     fabric_ext_leaves = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
 
     border_leaves = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
 
     leaves_greatfox = map(object({
-      id               = number
-      hypervisor_node  = optional(string, null)
-      is_vm            = optional(bool, true)
-      underlay_bridges = optional(list(string), null)
+      id                 = number
+      hypervisor_node    = optional(string, null)
+      is_vm              = optional(bool, true)
+      underlay_bridges   = optional(list(string), null)
+      underlay_peer_vlan = optional(number, null)
     }))
   })
 }
@@ -178,17 +182,17 @@ variable "dns" {
 variable "vnis" {
   type = object({
     l3 = map(object({
-      vni                = number
-      vrf                = string
-      vrf_table          = number
-      ipv4_rt_imports    = optional(string, null)
-      ipv4_rt_exports    = optional(string, null)
+      vni                         = number
+      vrf                         = string
+      vrf_table                   = number
+      ipv4_rt_imports             = optional(string, null)
+      ipv4_rt_exports             = optional(string, null)
       border_leaf_ipv4_rt_imports = optional(string, null)
       border_leaf_ipv4_rt_exports = optional(string, null)
-      evpn_rt_imports    = optional(list(string), [])
-      evpn_rt_exports    = optional(list(string), [])
-      ext_l3_vlan        = optional(number)
-      export_vpn_ipv4    = optional(bool, false)
+      evpn_rt_imports             = optional(list(string), [])
+      evpn_rt_exports             = optional(list(string), [])
+      ext_l3_vlan                 = optional(number)
+      export_vpn_ipv4             = optional(bool, false)
       redistribute_ipv4 = optional(object({
         connected = optional(object({}), null)
         static    = optional(object({}), null)

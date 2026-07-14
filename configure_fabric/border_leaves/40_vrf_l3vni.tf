@@ -74,7 +74,7 @@ resource "vyos_vrf_name" "create_vrfs" {
     module.leaf_common,
     #vyos_interfaces_ethernet_vif.set_eth3_vif_mtu
   ]
-  for_each   = var.vnis.l3
+  for_each = var.vnis.l3
 
   identifier = { name = each.value.vrf }
 

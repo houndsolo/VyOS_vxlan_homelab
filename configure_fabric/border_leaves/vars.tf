@@ -14,6 +14,7 @@ variable "node" {
     hypervisor_node        = optional(string, null)
     is_vm                  = optional(bool, true)
     underlay_bridges       = optional(list(string), null)
+    underlay_peer_vlan     = optional(number, null)
     hostname               = string
     l2_svd                 = number
     underlay_local_as      = number
