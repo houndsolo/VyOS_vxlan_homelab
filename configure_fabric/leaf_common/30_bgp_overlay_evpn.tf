@@ -25,6 +25,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_overlay" {
   identifier    = { peer_group = "spine_overlay" }
   remote_as     = "internal"
   update_source = var.node.vxlan_source_interface
+  bfd = {}
   address_family = {
     l2vpn_evpn = {
       soft_reconfiguration = { inbound = true }
