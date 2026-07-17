@@ -2,7 +2,7 @@ resource "proxmox_virtual_environment_vm" "vyos_vxlan_vtep" {
   name            = var.host_node.hostname
   description     = "managed by opentofu"
   tags            = ["opentofu", "debian", "vyos", "vxlan"]
-  started         = true
+  started         = false
   keyboard_layout = "en-us"
   migrate         = false
   on_boot         = true
