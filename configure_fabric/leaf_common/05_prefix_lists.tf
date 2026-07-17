@@ -58,3 +58,56 @@ resource "vyos_policy_route_map_rule" "local_as_rm_rule" {
 
 
 
+resource "vyos_policy_as_path_list" "block_local_AS_evpn" {
+  identifier = {
+    as_path_list = "block_local_AS_evpn_PL"
+  }
+}
+
+resource "vyos_policy_as_path_list_rule" "block_local_AS_evpn_rule" {
+  depends_on = [resource.vyos_policy_as_path_list.block_local_AS_evpn]
+
+  identifier = {
+    as_path_list = "block_local_AS_evpn_PL"
+    rule         = 10
+  }
+
+  action = "permit"
+  regex  = "^$"
+}
+
+resource "vyos_policy_route_map" "route_map_block_local_evpn" {
+  depends_on = [
+    resource.vyos_policy_as_path_list_rule.as_path_local_rule,
+    resource.vyos_policy_as_path_list_rule.as_path_local_rule_extl3
+  ]
+  identifier = {
+    route_map = "block_local_as_rm"
+  }
+}
+
+resource "vyos_policy_route_map_rule" "route_map_block_local_evpn_rule" {
+  depends_on = [vyos_policy_route_map.route_map_block_local_evpn]
+
+  identifier = {
+    route_map = "block_local_as_rm"
+    rule      = 10
+  }
+
+  action = "deny"
+
+  match = {
+    as_path = "block_local_AS_evpn_PL"
+  }
+}
+
+resource "vyos_policy_route_map_rule" "route_map_block_local_evpn_rule_2" {
+  depends_on = [vyos_policy_route_map.route_map_block_local_evpn]
+
+  identifier = {
+    route_map = "block_local_as_rm"
+    rule      = 100
+  }
+
+  action = "permit"
+}

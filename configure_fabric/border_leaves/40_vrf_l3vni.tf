@@ -139,7 +139,9 @@ resource "vyos_vrf_name" "create_vrfs" {
           each.value.export_vpn_ipv4 ? {
             advertise = {
               ipv4 = {
-                unicast = {}
+                unicast = {
+                  route_map = "block_local_as_rm"
+                }
               }
             }
           } : {}
