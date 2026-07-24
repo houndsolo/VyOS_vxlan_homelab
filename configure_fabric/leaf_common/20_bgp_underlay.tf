@@ -27,7 +27,7 @@ resource "vyos_protocols_bgp_peer_group" "peer_group_spine_underlay" {
     extended_nexthop = true
   }
   remote_as = "external"
-  bfd = {}
+  bfd       = {}
   address_family = {
     ipv6_unicast = {
       soft_reconfiguration = { inbound = true }
